@@ -2,15 +2,190 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Niam's Portfolio Website</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta name="color-scheme" content="dark">
+    <style>html{background:#050506;color-scheme:dark}@view-transition{navigation:auto}</style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Niam LeStourgeon | Portfolio</title>
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+    <meta name="description" content="Niam LeStourgeon's portfolio: AWS, backend, and AI projects built with Claude's API.">
+    <link rel="canonical" href="https://niam.pro/">
+    <script>document.documentElement.classList.add("js")</script>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-qOhFsq0QMV2REqNwk5hGH5bZE9SkX6gt6yeyKdYPv+U='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; media-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <link rel="preload" href="assets/fonts/bricolage-grotesque.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="assets/fonts/dm-sans.woff2" as="font" type="font/woff2" crossorigin>
+    <script defer src="intro.js"></script>
+    <script defer src="nav.js"></script>
+    <script defer src="/analytics.js"></script>
+    <script defer src="assets/anime.umd.min.js"></script>
+    <script defer src="motion.js"></script>
+    <link rel="stylesheet" href="NiamThePro.css">
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://niam.pro/">
+    <meta property="og:title" content="Niam LeStourgeon | Portfolio">
+    <meta property="og:description" content="Niam LeStourgeon's portfolio: AWS, backend, and AI projects built with Claude's API.">
+    <meta property="og:image" content="https://niam.pro/og-image.jpg">
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://niam.pro/">
+    <meta property="twitter:title" content="Niam LeStourgeon | Portfolio">
+    <meta property="twitter:description" content="Niam LeStourgeon's portfolio: AWS, backend, and AI projects built with Claude's API.">
+    <meta property="twitter:image" content="https://niam.pro/og-image.jpg">
+    <!-- Person Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Niam LeStourgeon",
+      "url": "https://niam.pro",
+      "sameAs": [
+        "https://www.linkedin.com/in/niamlestou",
+        "https://github.com/niamlestou"
+      ]
+    }
+    </script>
 </head>
 <body>
-    <h1>YOOOOOOOOOO</h1>
-    <P>
-    Hello World! We are programming some stuff again, lets goooooooooooooooooooooooooo.
-    I'll post projects and certifications here mega penis
-    </P>
+    <canvas id="intro" aria-hidden="true"></canvas>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+        <div class="header-inner">
+            <a class="site-brand" href="index.html">Niam LeStourgeon</a>
+            <nav aria-label="Primary">
+                <ul class="menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li class="dropdown">
+                        <a href="skills.html">Skills &amp; Certifications &#9662;</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="data-analytics.html">Data Analytics</a></li>
+                            <li><a href="ai-usage-and-training.html">AI Usage and Training</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="projects.html">Projects &#9662;</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="fantasy-football-agent.html">Fantasy Football Agent</a></li>
+                            <li><a href="farmstead-world.html">Farmstead World</a></li>
+                            <li><a href="tick-forward.html">Tick Forward</a></li>
+                            <li><a href="lamp-light.html">Lamp Light</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main">
+        <section class="hero hero--split">
+            <div class="hero-inner container">
+                <div>
+                    <p class="eyebrow">Data Engineering / Analytics / Applied AI</p>
+                    <h1 class="hero-title">Niam <span class="gold">LeStourgeon</span></h1>
+                    <p class="hero-lead">I turn complex data into useful systems.</p>
+                    <p class="hero-description">I build end-to-end data pipelines, analytical tools, and AI-powered workflows that turn raw information into decisions.</p>
+                    <p class="hero-status">Phoenix, AZ &middot; Open to internships and full-time roles</p>
+                    <div class="hero-actions">
+                        <a class="btn btn--primary" href="projects.html">Explore My Projects &nearr;</a>
+                        <a class="btn btn--secondary" href="PortfolioResume.pdf" download data-track="resume-download">Download R&eacute;sum&eacute; &darr;</a>
+                        <a class="btn btn--ghost" href="contact.html">Contact me &nearr;</a>
+                    </div>
+                </div>
+                <a class="card preview" href="tick-forward.html" aria-label="Tick Forward pipeline preview">
+                    <p class="preview-label">Now building &middot; Tick Forward</p>
+                    <ol class="pipe">
+                        <li><b>Market data in</b><span>Price and headline snapshots on a schedule</span></li>
+                        <li><b>Models score it</b><span>Ridge logistic on numbers (AUC 0.925), Laya on text</span></li>
+                        <li><b>Guardrails decide</b><span>$5,000 position cap, $250 daily loss limit</span></li>
+                        <li><b>Paper trade, then grade</b><span>Alpaca paper account, time-split evaluation</span></li>
+                    </ol>
+                </a>
+            </div>
+        </section>
+        <section class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Impact at a Glance</h2>
+                </div>
+                <div class="stats-grid">
+                    <div class="card stat-card">
+                        <div class="stat-value stat-value--text" data-count="119">119</div>
+                        <div class="stat-label">Decisions Served, Fantasy Football Agent</div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-value stat-value--text" data-count="0.925" data-decimals="3">0.925</div>
+                        <div class="stat-label">Regime AUC, Tick Forward Model</div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-value stat-value--text" data-count="4">4</div>
+                        <div class="stat-label">Projects Built</div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-value stat-value--text" data-count="15">15</div>
+                        <div class="stat-label">Users Across Projects</div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-value stat-value--text" data-count="1">1</div>
+                        <div class="stat-label">Year Building</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Featured Work</h2>
+                </div>
+                <article class="card flagship">
+                    <video controls muted preload="none" poster="assets/poster-fantasyfootballagent.jpg" playsinline>
+                        <source src="fantasyfootballagent-video.mp4" type="video/mp4">
+                    </video>
+                    <div>
+                        <span class="badge">Featured</span>
+                        <p class="project-meta">Agents &middot; Analytics &middot; AI</p>
+                        <h3 class="project-title"><a href="fantasy-football-agent.html">Fantasy Football Agent</a></h3>
+                        <p class="project-description">Fantasy Football research took more time than I had, so I built an agent that does it and interprets the results the way I would. It saves me countless hours so I can focus on more important work.</p>
+                        <div class="tech-stack"><span class="tech-tag">Python</span><span class="tech-tag">Claude API</span><span class="tech-tag">Agents</span></div>
+                        <a class="case-link" href="fantasy-football-agent.html">Read case study &nearr;</a>
+                    </div>
+                </article>
+                <article class="card work-secondary">
+                    <p class="project-meta">AI &middot; Finance &middot; Local models</p>
+                    <h3 class="project-title"><a href="tick-forward.html">Tick Forward</a></h3>
+                    <p class="project-description">A trading bot that trains its own local models (Qwen and Laya) to read financial data fast and cheaply, with hard risk limits before any real money is involved.</p>
+                    <div class="tech-stack"><span class="tech-tag">PyTorch</span><span class="tech-tag">QLoRA</span><span class="tech-tag">Paper trading</span></div>
+                    <a class="case-link" href="tick-forward.html">Read case study &nearr;</a>
+                </article>
+            </div>
+        </section>
+        <section class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Core Stack</h2>
+                </div>
+                <div class="tech-stack">
+                    <span class="tech-tag">Python</span>
+                    <span class="tech-tag">PyTorch</span>
+                    <span class="tech-tag">AWS Cloud Services</span>
+                    <span class="tech-tag">PostgreSQL</span>
+                    <span class="tech-tag">Claude Code/API</span>
+                    <span class="tech-tag">PowerBI</span>
+                    <span class="tech-tag">Excel</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-inner">
+                <p class="footer-copyright">Copyright &copy; 2026 <span class="gold">Niam LeStourgeon.</span> All Rights Reserved</p>
+                <a class="footer-link" href="https://github.com/niamlestou" rel="noopener" target="_blank">GitHub</a>
+                <a class="footer-link" href="https://www.linkedin.com/in/niamlestou" rel="noopener" target="_blank">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>

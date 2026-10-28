@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="color-scheme" content="dark">
+    <style>html{background:#050506;color-scheme:dark}@view-transition{navigation:auto}</style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tick Forward | Niam LeStourgeon</title>
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+    <meta name="description" content="Tick Forward by Niam LeStourgeon: AI-powered stock trading bot with trained models, AWS Lambda, and automated decision-making for trading strategies.">
+    <link rel="canonical" href="https://niam.pro/tick-forward.html">
+    <script>document.documentElement.classList.add("js")</script>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-qOhFsq0QMV2REqNwk5hGH5bZE9SkX6gt6yeyKdYPv+U='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; media-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <link rel="preload" href="assets/fonts/bricolage-grotesque.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="assets/fonts/dm-sans.woff2" as="font" type="font/woff2" crossorigin>
+    <script defer src="nav.js"></script>
+    <script defer src="/analytics.js"></script>
+    <script defer src="assets/anime.umd.min.js"></script>
+    <script defer src="motion.js"></script>
+    <link rel="stylesheet" href="NiamThePro.css">
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://niam.pro/tick-forward.html">
+    <meta property="og:title" content="Tick Forward | Niam LeStourgeon">
+    <meta property="og:description" content="Tick Forward by Niam LeStourgeon: AI-powered stock trading bot with trained models, AWS Lambda, and automated decision-making for trading strategies.">
+    <meta property="og:image" content="https://niam.pro/og-image.jpg">
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://niam.pro/tick-forward.html">
+    <meta property="twitter:title" content="Tick Forward | Niam LeStourgeon">
+    <meta property="twitter:description" content="Tick Forward by Niam LeStourgeon: AI-powered stock trading bot with trained models, AWS Lambda, and automated decision-making for trading strategies.">
+    <meta property="twitter:image" content="https://niam.pro/og-image.jpg">
+<style>
+    main { text-align: center; }
+    main p, main .card p { max-width: 62ch; margin-inline: auto; line-height: 1.7; text-wrap: pretty; }
+    .stats-grid, .tech-stack { justify-content: center; }
+</style>
+</head>
+<body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+        <div class="header-inner">
+            <a class="site-brand" href="index.html">Niam LeStourgeon</a>
+            <nav aria-label="Primary">
+                <ul class="menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li class="dropdown">
+                        <a href="skills.html">Skills &amp; Certifications &#9662;</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="data-analytics.html">Data Analytics</a></li>
+                            <li><a href="ai-usage-and-training.html">AI Usage and Training</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="projects.html">Projects &#9662;</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="fantasy-football-agent.html">Fantasy Football Agent</a></li>
+                            <li><a href="farmstead-world.html">Farmstead World</a></li>
+                            <li><a href="tick-forward.html">Tick Forward</a></li>
+                            <li><a href="lamp-light.html">Lamp Light</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main">
+        <section class="hero">
+            <div class="hero-inner container">
+                <p class="eyebrow">AI / Finance / Local models</p>
+                <h1 class="hero-title">Tick Forward</h1>
+                <p class="hero-description">A trading bot that trains its own models, reads the market, and makes the call.</p>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">The Numbers</h2>
+                </div>
+                <div class="stats-grid">
+                    <div class="card stat-card">
+                        <div class="stat-value stat-value--text" data-count="0.925" data-decimals="3">0.925</div>
+                        <div class="stat-label">AUC, Ridge Logistic Model</div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-value stat-value--text" data-count="5000" data-prefix="$" data-group="1">$5,000</div>
+                        <div class="stat-label">Position Cap Per Trade</div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-value stat-value--text" data-count="250" data-prefix="$">$250</div>
+                        <div class="stat-label">Daily Loss Limit</div>
+                    </div>
+                </div>
+                <p class="text-center text-muted">Paper-trading results will be posted once the bot has a full track record.</p>
+            </div>
+        </section>
+<!--
+        <section class="section">
+            <div class="container">
+                <div class="media-wrapper">
+                    <div class="media-placeholder">
+                        <p>Demo video and live site coming soon.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+-->
+        <section class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">The Problem</h2>
+                </div>
+                <p>Markets move all day, and good trading asks for the same things every time: research,
+                    a plan, and the discipline to follow it. Doing that by hand is slow, emotional, and
+                    easy to skip when life gets busy. Most people either miss the setup or talk themselves
+                    into a bad one.</p> <br> <br>
+                    <p>
+                        Currently, the problem is that Day Trading as a practice almost always loses in the long run, 
+                        and that is just because of the volatility of the markets. The AI has not yet made money in 
+                        any version of it or in any trial run not because it's bad or its training is bad, but rather 
+                        because I haven't found a way to apply it to financial data in a way that puts it in a position 
+                        to win. I'm currently trying to change the way the AI approaches the data, and change the way 
+                        that Qwen and Laya interact with each other, and the market. The problem is I want to make money 
+                        from the stock market with AI in a way that can outperform a computer script with pre-written rules, 
+                        and have not been able to find that path yet. If you have any ideas, PLEASE contact me.
+                    </p>
+                <p class="text-center"><br>I made a report that walks you through what I've done so far in this project, and the many different angles I've come at it from.</p>
+                <p class="text-center"><a class="btn btn--primary" href="local-ai-roadmap.html">Read the Roadmap Report</a></p>
+                <p class="text-center text-muted"><small>Want to make reports like this with AI? Check out <a href="https://github.com/niamlestou/niams-ai-skills/tree/main/skills/reports" rel="noopener" target="_blank">my skill</a>.</small></p>
+            </div>
+        </section>
+<!--
+        <section class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">How It Works</h2>
+                </div>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-marker" aria-hidden="true"></div>
+                        <div class="timeline-content">
+                            <h3 class="timeline-title">Market Data In</h3>
+                            <p class="timeline-description">Price and volume data is pulled on a schedule, so the bot is always working from fresh information.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-marker" aria-hidden="true"></div>
+                        <div class="timeline-content">
+                            <h3 class="timeline-title">The Models Weigh In</h3>
+                            <p class="timeline-description">Trained models score the setup against patterns they learned from historical market data.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-marker" aria-hidden="true"></div>
+                        <div class="timeline-content">
+                            <h3 class="timeline-title">Rules Approve the Trade</h3>
+                            <p class="timeline-description">Risk limits and position sizing sit between the model's signal and any order.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-marker" aria-hidden="true"></div>
+                        <div class="timeline-content">
+                            <h3 class="timeline-title">The Bot Acts</h3>
+                            <p class="timeline-description">Approved trades are executed automatically, or surfaced as an alert when a human should decide.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-marker" aria-hidden="true"></div>
+                        <div class="timeline-content">
+                            <h3 class="timeline-title">Every Call Gets Graded</h3>
+                            <p class="timeline-description">Results are logged, so winning and losing decisions can be reviewed and the models retrained.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+-->
+        <section class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Key Decisions</h2>
+                </div>
+                <div class="decisions-grid">
+                    <article class="card decision-card">
+                        <div class="decision-number" aria-hidden="true">01</div>
+                        <h3 class="decision-title">Trained Models, Not a Chat Wrapper</h3>
+                        <p class="decision-description">A general chatbot can talk about the market, but it was not trained to trade it. Tick Forward
+                            uses models trained on market data, so decisions are faster, cheaper, and repeatable.</p>
+                    </article>
+                    <article class="card decision-card">
+                        <div class="decision-number" aria-hidden="true">02</div>
+                        <h3 class="decision-title">Multiple Types of Models</h3>
+                        <p class="decision-description">LLMs and SLMs are pretty slow for decisions on a market that is 
+                            rapidly changing moment to moment. When every second matters, you need quick decisions. Laya is 
+                            an open-source system 1 model (Like Jev) that can be run locally and is very fast. The catch is that 
+                            it needs to be calibrated and sometimes trained so that it can make the right decisions confidently, which 
+                            is where much of my learning is coming from.
+                        </p>
+                    </article>
+                    <article class="card decision-card">
+                        <div class="decision-number" aria-hidden="true">03</div>
+                        <h3 class="decision-title">Automation With Guardrails</h3>
+                        <p class="decision-description">Automation is only useful if it is safe. The model proposes and the rules dispose: risk
+                            limits and position sizing sit between the signal and the order, with a clear testing
+                            path before real money is involved.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Under the Hood</h2>
+                </div>
+                <div class="decisions-grid">
+                    <article class="card decision-card">
+                        <div class="decision-number" aria-hidden="true">01</div>
+                        <h3 class="decision-title">Numbers to a Logistic, Text to Laya</h3>
+                        <p class="decision-description">A ridge logistic model read the market snapshot numbers far better than Laya did (regime AUC 0.925 vs 0.631), so numbers go to the logistic. Laya reads text and breaks ties where the logistic is unsure. New kinds of data go to the logistic first.</p>
+                    </article>
+                    <article class="card decision-card">
+                        <div class="decision-number" aria-hidden="true">02</div>
+                        <h3 class="decision-title">Fine-Tuning Qwen With QLoRA</h3>
+                        <p class="decision-description">I fine-tuned Qwen3-4B-Instruct with 4-bit QLoRA in PyTorch (peft and bitsandbytes) to read a headline and call its direction. The answer is one word, scored from the first-token probabilities, so the base and tuned models compare without any sampling noise.</p>
+                    </article>
+                    <article class="card decision-card">
+                        <div class="decision-number" aria-hidden="true">03</div>
+                        <h3 class="decision-title">Honest Evaluation</h3>
+                        <p class="decision-description">The tuned model jumped from 71% to 88% accuracy on public sentiment data, but on 6,000 held-out Benzinga headlines labelled by what the stock did next, the AUC gain was +0.004 with an interval spanning zero. That is not a win, and the report says so. A model only counts if it beats the base on time-split data it never trained on.</p>
+                    </article>
+                    <article class="card decision-card">
+                        <div class="decision-number" aria-hidden="true">04</div>
+                        <h3 class="decision-title">Lookahead and Cost Guardrails</h3>
+                        <p class="decision-description">Headlines must be created before the entry open, and the tuned model is only tested after its last training day. A fitted Laya on 25 large caps reached ECE 0.02 to 0.06 but no measured edge. Hard limits cap each position at $5,000 and daily loss at $250, on a paper account until the evidence is there.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">What's Next</h2>
+                </div>
+                <div class="card card--bordered">
+                    <p>The bot is still in development. Next up is a longer live track record, more strategies,
+                        and tighter risk controls. <br> In the meantime, meet <a href="lamp-light.html">Lamp Light</a>,
+                        my personal document reader.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Tech Stack</h2>
+                </div>
+                <div class="tech-stack">
+                    <span class="tech-tag">Python</span>
+                    <span class="tech-tag">Trained ML models</span>
+                    <span class="tech-tag">PyTorch</span>
+                    <span class="tech-tag">QLoRA (peft, bitsandbytes)</span>
+                    <span class="tech-tag">Qwen3-4B</span>
+                    <span class="tech-tag">Laya</span>
+                    <span class="tech-tag">Ridge logistic baselines</span>
+                    <span class="tech-tag">Alpaca paper trading</span>
+                    <span class="tech-tag">Day-block bootstrap</span>
+                    <span class="tech-tag">Market data APIs</span>
+                    <span class="tech-tag">Automated order execution</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-inner">
+                <p class="footer-copyright">Copyright &copy; 2026 <span class="gold">Niam LeStourgeon.</span> All Rights Reserved</p>
+                <a class="footer-link" href="https://github.com/niamlestou" rel="noopener" target="_blank">GitHub</a>
+                <a class="footer-link" href="https://www.linkedin.com/in/niamlestou" rel="noopener" target="_blank">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

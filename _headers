@@ -1,0 +1,36 @@
+# Security + cache headers. Read by Netlify and Cloudflare Pages; GitHub Pages ignores this file
+# (it cannot set headers, so the pages carry a CSP <meta> as a fallback).
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Cross-Origin-Opener-Policy: same-origin
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-qOhFsq0QMV2REqNwk5hGH5bZE9SkX6gt6yeyKdYPv+U='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; media-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
+
+# Private analytics admin: never cached, never indexed.
+/admin/*
+  Cache-Control: no-store
+  X-Robots-Tag: noindex, nofollow
+
+/assets/*
+  Cache-Control: public, max-age=604800
+
+/assets/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.mp4
+  Cache-Control: public, max-age=2592000
+
+# The Roadmap report loads Google Fonts, so it needs a looser policy than the site default.
+/local-ai-roadmap.html
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'
+
+/admin/*
+  Cache-Control: no-store
+  X-Robots-Tag: noindex, nofollow
+
+# DEPLOY NOTE: a static host serves every file in the folder. Do not upload data/, analytics-server/,
+# graft/ or .impeccable/ (analytics rows, server code, local tool caches); analytics-server/server.mjs already
+# 404s them, but a plain static upload would not.

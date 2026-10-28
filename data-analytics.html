@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="color-scheme" content="dark">
+    <style>html{background:#050506;color-scheme:dark}@view-transition{navigation:auto}</style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Analytics | Niam LeStourgeon</title>
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+    <meta name="description" content="Niam LeStourgeon's Data Analytics project showcasing AWS, backend, and AI integration for data visualization and analysis.">
+    <link rel="canonical" href="https://niam.pro/data-analytics.html">
+    <script>document.documentElement.classList.add("js")</script>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-qOhFsq0QMV2REqNwk5hGH5bZE9SkX6gt6yeyKdYPv+U='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; media-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <link rel="preload" href="assets/fonts/bricolage-grotesque.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="assets/fonts/dm-sans.woff2" as="font" type="font/woff2" crossorigin>
+    <script defer src="nav.js"></script>
+    <script defer src="assets/anime.umd.min.js"></script>
+    <script defer src="motion.js"></script>
+    <script defer src="data-analytics.js"></script>
+    <link rel="stylesheet" href="NiamThePro.css">
+    <style>
+        /* Model statistics demo: keeps the admin dashboard's own navy palette */
+        .ms { --bg: #131a28; --field: #1b2335; --line: #2a3349; --text: #e9edf7; --muted: #9aa6bd; --accent: #a3abff; --sel: #2f3a5f;
+            max-width: 1000px; margin: 0 auto; padding: var(--space-6); background: var(--bg); border: 1px solid var(--line); border-radius: var(--radius-xl); box-shadow: var(--shadow-lg); color: var(--text); }
+        .ms-top { display: flex; justify-content: space-between; gap: var(--space-4); align-items: flex-start; }
+        .ms-title { margin: 0 0 var(--space-3); font-size: 1.6rem; line-height: 1.2; color: var(--text); }
+        .ms-sub { margin: 0; max-width: 46rem; color: var(--muted); font-size: 0.95rem; }
+        .ms-badge { flex: none; padding: 4px 12px; border-radius: var(--radius-full); background: #272e5a; color: #b9bdff; font-size: 0.75rem; font-weight: 700; }
+        .ms-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--space-4); margin-top: var(--space-5); }
+        .ms-controls label { display: flex; flex-direction: column; gap: var(--space-2); color: var(--muted); font-size: 0.85rem; font-weight: 600; }
+        .ms-controls select { appearance: none; width: 100%; padding: 12px 36px 12px 14px; border: 1px solid var(--line); border-radius: var(--radius-md); color: var(--text); font: 600 0.95rem var(--font-body); cursor: pointer;
+            background: var(--field) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%23cdd3e6' stroke-width='2'%3E%3Cpath d='m1 1 5 5 5-5'/%3E%3C/svg%3E") no-repeat right 14px center; }
+        .ms-meta { margin: var(--space-4) 0; color: var(--muted); font-size: 0.85rem; }
+        .ms-body { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-6); }
+        @media (min-width: 800px) { .ms-body { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); } }
+        .ms-h { margin: 0 0 var(--space-3); font-size: 1rem; color: var(--text); }
+        .ms-chart { position: relative; height: 270px; touch-action: pan-y; border-radius: var(--radius-md); }
+        .ms-chart:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+        .ms-chart svg, .ms-tip { pointer-events: none; }
+        .ms-chart svg { display: block; }
+        .ms-grid { stroke: var(--line); }
+        .ms-tick { fill: var(--muted); font-size: 12px; }
+        .ms-line { fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-linejoin: round; }
+        .ms-dot { fill: var(--accent); stroke: var(--bg); stroke-width: 1; }
+        .ms-dot.on { stroke: #fff; stroke-width: 2; }
+        .ms-cross { stroke: var(--muted); stroke-dasharray: 3 4; }
+        .ms-tip { position: absolute; transform: translate(-50%, -100%); padding: 6px 10px; border: 1px solid var(--line); border-radius: var(--radius-md); background: #0d1220; font-size: 0.8rem; white-space: nowrap; }
+        .ms-empty { margin: 0; padding-top: var(--space-8); text-align: center; color: var(--muted); }
+        .ms-list { display: flex; flex-direction: column; gap: var(--space-2); }
+        .ms-row { display: flex; justify-content: space-between; gap: var(--space-3); padding: 12px 14px; border: 0; border-left: 3px solid var(--line); border-radius: var(--radius-sm); background: none; color: var(--text); font: inherit; text-align: left; cursor: pointer; }
+        .ms-row:hover { background: var(--field); }
+        .ms-row[aria-pressed="true"] { background: var(--sel); border-left-color: var(--accent); }
+        .ms-row:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+        .ms-exact { margin-top: var(--space-5); }
+        .ms-exact summary { cursor: pointer; width: fit-content; color: var(--text); text-decoration: underline; text-underline-offset: 3px; }
+        .ms-table-wrap { max-height: 260px; overflow: auto; margin-top: var(--space-3); border: 1px solid var(--line); border-radius: var(--radius-md); }
+        #ms-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+        #ms-table th, #ms-table td { padding: 8px 12px; text-align: right; border-bottom: 1px solid var(--line); }
+        #ms-table th:first-child, #ms-table td:first-child { text-align: left; }
+        #ms-table th { position: sticky; top: 0; background: var(--field); color: var(--muted); }
+        @media (max-width: 639px) { .ms { padding: var(--space-4); } .ms-top { flex-direction: column-reverse; } }
+    </style>
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://niam.pro/data-analytics.html">
+    <meta property="og:title" content="Data Analytics | Niam LeStourgeon">
+    <meta property="og:description" content="Niam LeStourgeon's Data Analytics project showcasing AWS, backend, and AI integration for data visualization and analysis.">
+    <meta property="og:image" content="https://niam.pro/og-image.jpg">
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://niam.pro/data-analytics.html">
+    <meta property="twitter:title" content="Data Analytics | Niam LeStourgeon">
+    <meta property="twitter:description" content="Niam LeStourgeon's Data Analytics project showcasing AWS, backend, and AI integration for data visualization and analysis.">
+    <meta property="twitter:image" content="https://niam.pro/og-image.jpg">
+</head>
+<body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+        <div class="header-inner">
+            <a class="site-brand" href="index.html">Niam LeStourgeon</a>
+            <nav aria-label="Primary">
+                <ul class="menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li class="dropdown">
+                        <a href="skills.html">Skills &amp; Certifications &#9662;</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="data-analytics.html">Data Analytics</a></li>
+                            <li><a href="ai-usage-and-training.html">AI Usage and Training</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="projects.html">Projects &#9662;</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="fantasy-football-agent.html">Fantasy Football Agent</a></li>
+                            <li><a href="farmstead-world.html">Farmstead World</a></li>
+                            <li><a href="tick-forward.html">Tick Forward</a></li>
+                            <li><a href="lamp-light.html">Lamp Light</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main">
+        <section class="hero">
+            <div class="hero-inner container">
+                <h1 class="hero-title">Data Analytics</h1>
+                <p class="hero-description">I believe that most problems that have yet to be solved are just data problems.
+                    We can understand almost everything with the right data at hand, and that is reflected in my projects.
+                </p>
+            </div>
+        </section>
+        <section class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">The Numbers</h2>
+                </div>
+                <div class="stats-grid">
+                    <div class="card stat-card">
+                        <div class="stat-value stat-value--text" data-count="20" data-suffix="+">20+</div>
+                        <div class="stat-label">Datasets / Sources</div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-value stat-value--text" data-count="2" data-suffix="M+">2M+</div>
+                        <div class="stat-label">Rows Processed</div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-value stat-value--text" data-count="6">6</div>
+                        <div class="stat-label">Dashboards Built</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Demo</h2>
+                </div>
+                <div class="ms" id="ms">
+                    <script type="application/json" id="ms-data">
+[{"day":"2026-09-28","model":"claude-sonnet-5-5","tool":"submit_drift_report","outcome":"Errored","calls":0,"tokens":0},
+{"day":"2026-10-01","model":"claude-sonnet-5-5","tool":"submit_drift_report","outcome":"Errored","calls":7,"tokens":0},
+{"day":"2026-10-01","model":"claude-sonnet-5-5","tool":"submit_drift_report","outcome":"Failed","calls":9,"tokens":0},
+{"day":"2026-10-01","model":"claude-sonnet-5-5","tool":"submit_game_forecast","outcome":"Failed","calls":572,"tokens":0},
+{"day":"2026-10-01","model":"claude-sonnet-5-5","tool":"submit_waiver_recommendations","outcome":"Errored","calls":7,"tokens":0},
+{"day":"2026-10-01","model":"claude-sonnet-5-5","tool":"submit_waiver_recommendations","outcome":"Failed","calls":18,"tokens":0},
+{"day":"2026-10-01","model":"jev-1.13.0","tool":"classify_news","outcome":"Success","calls":6,"tokens":98404},
+{"day":"2026-10-01","model":"jev-1.13.0","tool":"read_news_policy","outcome":"Success","calls":9,"tokens":16605},
+{"day":"2026-10-02","model":"claude-sonnet-5-5","tool":"submit_drift_report","outcome":"Success","calls":2,"tokens":10401},
+{"day":"2026-10-02","model":"claude-sonnet-5-5","tool":"submit_game_forecast","outcome":"Failed","calls":600,"tokens":0},
+{"day":"2026-10-02","model":"claude-sonnet-5-5","tool":"submit_game_forecast","outcome":"Success","calls":15,"tokens":99273},
+{"day":"2026-10-02","model":"claude-sonnet-5-5","tool":"submit_league_report","outcome":"Success","calls":2,"tokens":54829},
+{"day":"2026-10-02","model":"claude-sonnet-5-5","tool":"submit_lineup_decisions","outcome":"Success","calls":2,"tokens":45325},
+{"day":"2026-10-02","model":"claude-sonnet-5-5","tool":"submit_waiver_recommendations","outcome":"Success","calls":2,"tokens":31789},
+{"day":"2026-10-02","model":"jev-1.13.0","tool":"read_news_policy","outcome":"Success","calls":2,"tokens":3690},
+{"day":"2026-10-03","model":"claude-sonnet-5-5","tool":"submit_drift_report","outcome":"Success","calls":1,"tokens":6995},
+{"day":"2026-10-03","model":"claude-sonnet-5-5","tool":"submit_league_report","outcome":"Success","calls":1,"tokens":30496},
+{"day":"2026-10-03","model":"claude-sonnet-5-5","tool":"submit_lineup_decisions","outcome":"Success","calls":1,"tokens":22961},
+{"day":"2026-10-03","model":"claude-sonnet-5-5","tool":"submit_waiver_recommendations","outcome":"Success","calls":1,"tokens":16121},
+{"day":"2026-10-03","model":"jev-1.13.0","tool":"read_news_policy","outcome":"Success","calls":1,"tokens":1845},
+{"day":"2026-10-04","model":"claude-sonnet-5-5","tool":"submit_drift_report","outcome":"Success","calls":1,"tokens":7723},
+{"day":"2026-10-04","model":"claude-sonnet-5-5","tool":"submit_league_report","outcome":"Success","calls":1,"tokens":30834},
+{"day":"2026-10-04","model":"claude-sonnet-5-5","tool":"submit_lineup_decisions","outcome":"Success","calls":2,"tokens":45448},
+{"day":"2026-10-04","model":"claude-sonnet-5-5","tool":"submit_waiver_recommendations","outcome":"Success","calls":1,"tokens":15860},
+{"day":"2026-10-04","model":"jev-1.13.0","tool":"read_news_policy","outcome":"Success","calls":2,"tokens":3690},
+{"day":"2026-10-06","model":"claude-sonnet-5-5","tool":"submit_drift_report","outcome":"Success","calls":2,"tokens":15225},
+{"day":"2026-10-06","model":"claude-sonnet-5-5","tool":"submit_game_review","outcome":"Success","calls":15,"tokens":171211},
+{"day":"2026-10-06","model":"claude-sonnet-5-5","tool":"submit_league_report","outcome":"Success","calls":2,"tokens":57940},
+{"day":"2026-10-06","model":"claude-sonnet-5-5","tool":"submit_lineup_decisions","outcome":"Success","calls":1,"tokens":23544},
+{"day":"2026-10-06","model":"claude-sonnet-5-5","tool":"submit_trade_candidates","outcome":"Success","calls":2,"tokens":94929},
+{"day":"2026-10-06","model":"claude-sonnet-5-5","tool":"submit_trade_recommendation","outcome":"Success","calls":2,"tokens":65365},
+{"day":"2026-10-06","model":"claude-sonnet-5-5","tool":"submit_waiver_recommendations","outcome":"Success","calls":2,"tokens":30993},
+{"day":"2026-10-06","model":"jev-1.13.0","tool":"read_news_policy","outcome":"Success","calls":2,"tokens":3690},
+{"day":"2026-10-08","model":"claude-sonnet-5-5","tool":"submit_game_forecast","outcome":"Success","calls":15,"tokens":102612},
+{"day":"2026-10-08","model":"jev-1.13.0","tool":"classify_news","outcome":"Success","calls":6,"tokens":101048},
+{"day":"2026-10-10","model":"claude-sonnet-5-5","tool":"submit_lineup_decisions","outcome":"Success","calls":1,"tokens":23529},
+{"day":"2026-10-10","model":"jev-1.13.0","tool":"read_news_policy","outcome":"Success","calls":1,"tokens":1845},
+{"day":"2026-10-11","model":"claude-sonnet-5-5","tool":"submit_drift_report","outcome":"Success","calls":1,"tokens":7720},
+{"day":"2026-10-11","model":"claude-sonnet-5-5","tool":"submit_league_report","outcome":"Success","calls":1,"tokens":30638},
+{"day":"2026-10-11","model":"claude-sonnet-5-5","tool":"submit_lineup_decisions","outcome":"Success","calls":2,"tokens":45769},
+{"day":"2026-10-11","model":"claude-sonnet-5-5","tool":"submit_waiver_recommendations","outcome":"Success","calls":1,"tokens":16914},
+{"day":"2026-10-11","model":"jev-1.13.0","tool":"read_news_policy","outcome":"Success","calls":2,"tokens":3690},
+{"day":"2026-10-13","model":"claude-sonnet-5-5","tool":"submit_drift_report","outcome":"Success","calls":2,"tokens":14949},
+{"day":"2026-10-13","model":"claude-sonnet-5-5","tool":"submit_game_review","outcome":"Success","calls":15,"tokens":175055},
+{"day":"2026-10-13","model":"claude-sonnet-5-5","tool":"submit_league_report","outcome":"Success","calls":2,"tokens":60477},
+{"day":"2026-10-13","model":"claude-sonnet-5-5","tool":"submit_lineup_decisions","outcome":"Success","calls":1,"tokens":22907},
+{"day":"2026-10-13","model":"claude-sonnet-5-5","tool":"submit_trade_candidates","outcome":"Success","calls":2,"tokens":95703},
+{"day":"2026-10-13","model":"claude-sonnet-5-5","tool":"submit_trade_recommendation","outcome":"Success","calls":2,"tokens":61339},
+{"day":"2026-10-13","model":"claude-sonnet-5-5","tool":"submit_waiver_recommendations","outcome":"Invalid Tool","calls":1,"tokens":28868},
+{"day":"2026-10-13","model":"claude-sonnet-5-5","tool":"submit_waiver_recommendations","outcome":"Success","calls":2,"tokens":31017},
+{"day":"2026-10-13","model":"jev-1.13.0","tool":"read_news_policy","outcome":"Success","calls":2,"tokens":3690},
+{"day":"2026-10-15","model":"claude-sonnet-5-5","tool":"submit_game_forecast","outcome":"Failed","calls":504,"tokens":0},
+{"day":"2026-10-15","model":"jev-1.13.0","tool":"classify_news","outcome":"Success","calls":6,"tokens":95654},
+{"day":"2026-10-16","model":"claude-sonnet-5-5","tool":"submit_game_forecast","outcome":"Failed","calls":937,"tokens":0},
+{"day":"2026-10-17","model":"claude-sonnet-5-5","tool":"submit_game_forecast","outcome":"Failed","calls":936,"tokens":0},
+{"day":"2026-10-17","model":"claude-sonnet-5-5","tool":"submit_lineup_decisions","outcome":"Failed","calls":3,"tokens":0},
+{"day":"2026-10-17","model":"jev-1.13.0","tool":"read_news_policy","outcome":"Success","calls":3,"tokens":5535},
+{"day":"2026-10-18","model":"claude-sonnet-5-5","tool":"submit_drift_report","outcome":"Failed","calls":3,"tokens":0},
+{"day":"2026-10-18","model":"claude-sonnet-5-5","tool":"submit_game_forecast","outcome":"Failed","calls":727,"tokens":0},
+{"day":"2026-10-18","model":"claude-sonnet-5-5","tool":"submit_lineup_decisions","outcome":"Failed","calls":3,"tokens":0},
+{"day":"2026-10-18","model":"claude-sonnet-5-5","tool":"submit_waiver_recommendations","outcome":"Failed","calls":6,"tokens":0},
+{"day":"2026-10-18","model":"jev-1.13.0","tool":"read_news_policy","outcome":"Success","calls":6,"tokens":11070},
+{"day":"2026-10-19","model":"claude-sonnet-5-5","tool":"submit_game_forecast","outcome":"Failed","calls":73,"tokens":0},
+{"day":"2026-10-20","model":"claude-sonnet-5-5","tool":"submit_drift_report","outcome":"Failed","calls":6,"tokens":0},
+{"day":"2026-10-20","model":"claude-sonnet-5-5","tool":"submit_game_forecast","outcome":"Failed","calls":1,"tokens":0},
+{"day":"2026-10-20","model":"claude-sonnet-5-5","tool":"submit_trade_candidates","outcome":"Failed","calls":6,"tokens":0},
+{"day":"2026-10-20","model":"claude-sonnet-5-5","tool":"submit_waiver_recommendations","outcome":"Failed","calls":12,"tokens":0},
+{"day":"2026-10-20","model":"jev-1.13.0","tool":"read_news_policy","outcome":"Success","calls":6,"tokens":11070},
+{"day":"2026-10-22","model":"claude-sonnet-5-5","tool":"submit_game_forecast","outcome":"Failed","calls":504,"tokens":0},
+{"day":"2026-10-22","model":"jev-1.14.0","tool":"classify_news","outcome":"Success","calls":6,"tokens":93310},
+{"day":"2026-10-23","model":"claude-sonnet-5-5","tool":"submit_game_forecast","outcome":"Failed","calls":937,"tokens":0},
+{"day":"2026-10-24","model":"claude-sonnet-5-5","tool":"submit_game_forecast","outcome":"Failed","calls":936,"tokens":0},
+{"day":"2026-10-24","model":"claude-sonnet-5-5","tool":"submit_lineup_decisions","outcome":"Failed","calls":3,"tokens":0},
+{"day":"2026-10-24","model":"jev-1.14.0","tool":"read_news_policy","outcome":"Success","calls":3,"tokens":5535},
+{"day":"2026-10-25","model":"claude-sonnet-5-5","tool":"submit_drift_report","outcome":"Failed","calls":3,"tokens":0},
+{"day":"2026-10-25","model":"claude-sonnet-5-5","tool":"submit_game_forecast","outcome":"Failed","calls":727,"tokens":0},
+{"day":"2026-10-25","model":"claude-sonnet-5-5","tool":"submit_lineup_decisions","outcome":"Failed","calls":3,"tokens":0},
+{"day":"2026-10-25","model":"claude-sonnet-5-5","tool":"submit_waiver_recommendations","outcome":"Failed","calls":6,"tokens":0},
+{"day":"2026-10-25","model":"jev-1.14.0","tool":"read_news_policy","outcome":"Success","calls":6,"tokens":11070},
+{"day":"2026-10-26","model":"claude-sonnet-5-5","tool":"submit_game_forecast","outcome":"Failed","calls":73,"tokens":0},
+{"day":"2026-10-27","model":"claude-sonnet-5-5","tool":"submit_drift_report","outcome":"Errored","calls":0,"tokens":0},
+{"day":"2026-10-27","model":"claude-sonnet-5-5","tool":"submit_drift_report","outcome":"Failed","calls":6,"tokens":0},
+{"day":"2026-10-27","model":"claude-sonnet-5-5","tool":"submit_game_forecast","outcome":"Failed","calls":1,"tokens":0},
+{"day":"2026-10-27","model":"claude-sonnet-5-5","tool":"submit_trade_candidates","outcome":"Failed","calls":6,"tokens":0},
+{"day":"2026-10-27","model":"claude-sonnet-5-5","tool":"submit_waiver_recommendations","outcome":"Failed","calls":12,"tokens":0},
+{"day":"2026-10-27","model":"jev-1.14.0","tool":"read_news_policy","outcome":"Success","calls":6,"tokens":11070}]
+</script>
+                    <div class="ms-top">
+                        <div>
+                            <h3 class="ms-title">Model statistics</h3>
+                            <p class="ms-sub">Explore Claude and Jev calls over time. Tokens combine input and output. A snapshot of real usage from the Fantasy Football Agent, 09-28 to 10-27.</p>
+                        </div>
+                        <span class="ms-badge">Model usage</span>
+                    </div>
+                    <div class="ms-controls">
+                        <label><span>Measure</span><select name="measure"></select></label>
+                        <label><span>Provider</span><select name="prov"></select></label>
+                        <label><span>Tool</span><select name="tool"></select></label>
+                        <label><span>Outcome</span><select name="outcome"></select></label>
+                        <label><span>Break down by</span><select name="by"></select></label>
+                    </div>
+                    <p class="ms-meta" id="ms-meta"></p>
+                    <div class="ms-body">
+                        <div>
+                            <h4 class="ms-h">Daily trend</h4>
+                            <div class="ms-chart" id="ms-chart" tabindex="0" role="group" aria-label="Daily trend chart. Use the left and right arrow keys to inspect each day."></div>
+                        </div>
+                        <div>
+                            <h4 class="ms-h" id="ms-list-h">By model</h4>
+                            <div class="ms-list" id="ms-list"></div>
+                        </div>
+                    </div>
+                    <details class="ms-exact">
+                        <summary>View exact model statistics</summary>
+                        <div class="ms-table-wrap"><table id="ms-table"></table></div>
+                    </details>
+                </div>
+            </div>
+        </section>
+
+ 
+        <section class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">The Problem</h2>
+                </div>
+                <div class="text-center" style="max-width: 60ch; margin-inline: auto; line-height: 1.7; text-wrap: pretty;">
+                    <p>All of the websites and projects that I build have as many analytics and measurements as I can get away with. The demo above shows why.</p>
+                    <p>There was a bug in my weather forecast engine, and when it failed, it failed quietly. No alerts went off and nothing broke. But the result was that it was calling Claude an absurd number of times, which could have led to huge API costs!</p>
+                    <p>Thankfully, a gate already written into the code did not allow any tokens to be used from an engine that had failed. Still, calling Claude that many times was not ideal. Because of this dashboard and the data it reported, I was able to catch it and fix it!</p>
+                </div>
+            </div>
+        </section>
+
+               <!--
+        <section class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">How It Works</h2>
+                </div>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-marker" aria-hidden="true"></div>
+                        <div class="timeline-content">
+                            <h3 class="timeline-title"><span class="placeholder">[Data In]</span></h3>
+                            <p class="timeline-description"><span class="placeholder">[Stage]</span><br><span class="placeholder">[What happens and which tool does it]</span></p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-marker" aria-hidden="true"></div>
+                        <div class="timeline-content">
+                            <h3 class="timeline-title"><span class="placeholder">[Clean and Model]</span></h3>
+                            <p class="timeline-description"><span class="placeholder">[Stage]</span><br><span class="placeholder">[What happens and which tool does it]</span></p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-marker" aria-hidden="true"></div>
+                        <div class="timeline-content">
+                            <h3 class="timeline-title"><span class="placeholder">[Analyze]</span></h3>
+                            <p class="timeline-description"><span class="placeholder">[Stage]</span><br><span class="placeholder">[What happens and which tool does it]</span></p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-marker" aria-hidden="true"></div>
+                        <div class="timeline-content">
+                            <h3 class="timeline-title"><span class="placeholder">[Visualize]</span></h3>
+                            <p class="timeline-description"><span class="placeholder">[Stage]</span><br><span class="placeholder">[What happens and which tool does it]</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Key Findings</h2>
+                </div>
+                <div class="decisions-grid">
+                    <article class="card decision-card placeholder-card">
+                        <div class="decision-number" aria-hidden="true">01</div>
+                        <h3 class="decision-title"><span class="placeholder">[Insight headline]</span></h3>
+                        <p class="decision-description"><span class="placeholder">[What you found, and what changed because of it]</span></p>
+                    </article>
+                    <article class="card decision-card placeholder-card">
+                        <div class="decision-number" aria-hidden="true">02</div>
+                        <h3 class="decision-title"><span class="placeholder">[Insight headline]</span></h3>
+                        <p class="decision-description"><span class="placeholder">[What you found, and what changed because of it]</span></p>
+                    </article>
+                    <article class="card decision-card placeholder-card">
+                        <div class="decision-number" aria-hidden="true">03</div>
+                        <h3 class="decision-title"><span class="placeholder">[Insight headline]</span></h3>
+                        <p class="decision-description"><span class="placeholder">[What you found, and what changed because of it]</span></p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+    -->
+        <section class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Tech Stack</h2>
+                </div>
+                <div class="tech-stack">
+                    <span class="tech-tag">Python</span>
+                    <span class="tech-tag">AWS</span>
+                    <span class="tech-tag">SQL</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-inner">
+                <p class="footer-copyright">Copyright &copy; 2026 <span class="gold">Niam LeStourgeon.</span> All Rights Reserved</p>
+                <a class="footer-link" href="https://github.com/niamlestou" rel="noopener" target="_blank">GitHub</a>
+                <a class="footer-link" href="https://www.linkedin.com/in/niamlestou" rel="noopener" target="_blank">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+    
+</body>
+</html>

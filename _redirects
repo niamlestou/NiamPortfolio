@@ -1,0 +1,12 @@
+# Old file names -> clean names (Netlify / Cloudflare Pages). GitHub Pages ignores this file.
+/NiamAbout.html /about.html 301
+/DataAnalytics.html /data-analytics.html 301
+/TickForward.html /tick-forward.html 301
+/FantasyFootballAgent.html /fantasy-football-agent.html 301
+/Farmsteadworld.html /farmstead-world.html 301
+/NiamContact.html /contact.html 301
+/NiamIndex.html / 301
+/NiamProjectsOverview.html /projects.html 301
+/NiamSkillzOverview.html /skills.html 301
+/Lamplight.html /lamp-light.html 301
+/Local%20AI%20Project%20Roadmap.html /local-ai-roadmap.html 301

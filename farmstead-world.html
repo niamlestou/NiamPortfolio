@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="color-scheme" content="dark">
+    <style>html{background:#050506;color-scheme:dark}@view-transition{navigation:auto}</style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmstead World | Niam LeStourgeon</title>
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+    <meta name="description" content="Farmstead World by Niam LeStourgeon: A perpetual browser game walking through the real food supply chain with 13 active farms, egg production, and corn harvests.">
+    <link rel="canonical" href="https://niam.pro/farmstead-world.html">
+    <script>document.documentElement.classList.add("js")</script>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-qOhFsq0QMV2REqNwk5hGH5bZE9SkX6gt6yeyKdYPv+U='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; media-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <link rel="preload" href="assets/fonts/bricolage-grotesque.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="assets/fonts/dm-sans.woff2" as="font" type="font/woff2" crossorigin>
+    <script defer src="nav.js"></script>
+    <script defer src="/analytics.js"></script>
+    <script defer src="assets/anime.umd.min.js"></script>
+    <script defer src="motion.js"></script>
+    <script defer src="farmstead.js"></script>
+    <link rel="stylesheet" href="NiamThePro.css">
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://niam.pro/farmstead-world.html">
+    <meta property="og:title" content="Farmstead World | Niam LeStourgeon">
+    <meta property="og:description" content="Farmstead World by Niam LeStourgeon: A perpetual browser game walking through the real food supply chain with 13 active farms, egg production, and corn harvests.">
+    <meta property="og:image" content="https://niam.pro/og-image.jpg">
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://niam.pro/farmstead-world.html">
+    <meta property="twitter:title" content="Farmstead World | Niam LeStourgeon">
+    <meta property="twitter:description" content="Farmstead World by Niam LeStourgeon: A perpetual browser game walking through the real food supply chain with 13 active farms, egg production, and corn harvests.">
+    <meta property="twitter:image" content="https://niam.pro/og-image.jpg">
+<style>
+    main { text-align: center; }
+    main p, main .card p { max-width: 62ch; margin-inline: auto; line-height: 1.7; text-wrap: pretty; }
+    .stats-grid, .project-grid { justify-content: center; }
+    .gp { max-width: 880px; margin: 0 auto; }
+    .gp-stage { position: relative; aspect-ratio: 16 / 10; background: var(--color-bg-elevated); border: 1px solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; }
+    .gp-slide { position: absolute; inset: 0; margin: 0; opacity: 0; visibility: hidden; transition: opacity .6s ease, visibility .6s; display: flex; align-items: center; justify-content: center; }
+    .gp-slide.on { opacity: 1; visibility: visible; }
+    .gp-slide img { width: 100%; height: 100%; object-fit: cover; }
+    .gp-slide .gp-ph { color: var(--color-text-muted); padding: 1rem; }
+    .gp-btn { position: absolute; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--color-border); background: rgba(5,5,6,.7); color: #fff; font-size: 1.4rem; cursor: pointer; }
+    .gp-btn:hover, .gp-btn:focus-visible { border-color: var(--color-gold); }
+    .gp-prev { left: 12px; } .gp-next { right: 12px; }
+    .gp-cap { min-height: 5.5em; margin-top: 1.25rem; }
+    .gp-cap h3 { color: var(--color-gold); margin-bottom: .35rem; }
+    .gp-dots { display: flex; justify-content: center; gap: 4px; margin-top: .5rem; }
+    .gp-dot { width: 24px; height: 24px; padding: 0; border: 0; background: none; cursor: pointer; display: grid; place-items: center; }
+    .gp-dot::after { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--color-border); }
+    .gp-dot[aria-current="true"]::after { background: var(--color-gold); }
+    @media (prefers-reduced-motion: reduce) { .gp-slide { transition: none; } }
+</style>
+</head>
+<body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+        <div class="header-inner">
+            <a class="site-brand" href="index.html">Niam LeStourgeon</a>
+            <nav aria-label="Primary">
+                <ul class="menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li class="dropdown">
+                        <a href="skills.html">Skills &amp; Certifications &#9662;</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="data-analytics.html">Data Analytics</a></li>
+                            <li><a href="ai-usage-and-training.html">AI Usage and Training</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="projects.html">Projects &#9662;</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="fantasy-football-agent.html">Fantasy Football Agent</a></li>
+                            <li><a href="farmstead-world.html">Farmstead World</a></li>
+                            <li><a href="tick-forward.html">Tick Forward</a></li>
+                            <li><a href="lamp-light.html">Lamp Light</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main">
+        <section class="hero">
+            <div class="hero-inner container">
+                <p class="eyebrow">Game / Web app / Free to play</p>
+                <h1 class="hero-title">Farmstead World</h1>
+                <p class="hero-description">The Perpetual World that walks you through our real food's supply chain.</p>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">The Numbers</h2>
+                </div>
+                <div class="stats-grid">
+                    <div class="card stat-card">
+                        <div class="stat-value stat-value--compact" data-count="13">13</div>
+                        <div class="stat-label">Active Farms</div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-value stat-value--compact" data-count="10355" data-group="1">10,355</div>
+                        <div class="stat-label">Dozen Eggs Produced</div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-value stat-value--compact" data-count="148">148</div>
+                        <div class="stat-label">Bushels of Corn Harvested</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div class="media-wrapper media-wrapper--square" style="max-width: 880px;">
+                    <video controls preload="none" poster="assets/poster-farmsteadworld.jpg" playsinline style="object-fit: contain;">
+                        <source src="farmsteadworld-video.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <p class="text-center" style="max-width: 60ch; margin-inline: auto; text-wrap: pretty;">A quick tour of Farmstead World, a free-to-play farming game where you plant, harvest and discover your way through real crops, foods and farm concepts. Good things take growing.</p>
+                <p class="text-center"><a class="btn btn--primary btn--lg" href="https://farmsteadworld.app/?utm_source=niampro&utm_medium=referral&utm_campaign=crosspromo" rel="noopener" target="_blank">Play Farmstead World &rarr;</a></p>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Gameplay</h2>
+                </div>
+                <div class="gp" role="region" aria-roledescription="carousel" aria-label="Farmstead World gameplay screenshots">
+                    <div class="gp-stage">
+                        <figure class="gp-slide on" data-title="Your farm" data-desc="Plant crops, raise animals and expand your homestead. Barns, silos and coops each unlock new ways to produce.">
+                            <img src="assets/farmstead-farm.webp" width="777" height="518" alt="Farmstead World screenshot: Your farm" decoding="async">
+                        </figure>
+                        <button class="gp-btn gp-prev" type="button" aria-label="Previous screenshot">&lsaquo;</button>
+                        <button class="gp-btn gp-next" type="button" aria-label="Next screenshot">&rsaquo;</button>
+                    </div>
+                    <div class="gp-cap" aria-live="polite"><h3></h3><p></p></div>
+                    <div class="gp-dots"><button class="gp-dot" type="button" aria-label="Show screenshot 1" aria-current="true"></button></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">The Inspiration</h2>
+                </div>
+                <p>I'm loving learning more and more about agribusiness, food/farm data, and the food supply
+                    chain, and I wanted to be able to see how it would play out, so I built this game to explore
+                    this interest more. It is intended to replicate the actual supply chain that controls our food,
+                    and is also played similarly to other perpetual browser games that I played when I was younger.
+                </p>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">How It Works</h2>
+                </div>
+                <p>
+                    You start out as a small family homestead, with 10 chickens and some space to grow. As you
+                    grow, you can optimize for different end points on our real food supply chain. You can focus
+                    on corn and be able to produce many of the different products with corn in it, such as beauty
+                    products or ethanol. There is a large guide to help you understand everything and help you move
+                    through the game.
+                </p>
+            </div>
+        </section>
+        <section class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Why I Built It</h2>
+                </div>
+                <p>
+                    I've been loving learning more about the food supply chain, and about agribusiness in general. I 
+                    plan to be at the <a href="https://www.thengashow.com/" rel="noopener" target="_blank">NGA show</a> this January,
+                    and I really hope to make some connections in the agribusiness/data industry. I would love to 
+                    work with a grocer or a local farm doing data analytics, and this project was to test my understanding 
+                    of our food supply chain and get my feet wet thinking about how farms can interact with data. More 
+                    projects that focus on this area to come!
+                </p>
+            </div>
+        </section>
+        <section class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">What's Next</h2>
+                </div>
+                <div class="card card--bordered">
+                    <p>This game can expand with accounts and a little more promotion/marketing. I also want to
+                        connect with other people promoting local farms, to expand the educational part of this
+                        project. In a few months I plan to revisit agri-data and build something else that relates to 
+                        this industry. <br> What's next for me is the <a href="tick-forward.html">Tick Forward project.</a>
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-inner">
+                <p class="footer-copyright">Copyright &copy; 2026 <span class="gold">Niam LeStourgeon.</span> All Rights Reserved</p>
+                <a class="footer-link" href="https://github.com/niamlestou" rel="noopener" target="_blank">GitHub</a>
+                <a class="footer-link" href="https://www.linkedin.com/in/niamlestou" rel="noopener" target="_blank">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+    
+</body>
+</html>

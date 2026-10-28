@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="color-scheme" content="dark">
+    <style>html{background:#050506;color-scheme:dark}@view-transition{navigation:auto}</style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fantasy Football Agent | Niam LeStourgeon</title>
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+    <meta name="description" content="Fantasy Football Agent by Niam LeStourgeon: AI that researches with your brain using Jev, Claude, AWS Lambda, FastAPI, and PostgreSQL for automated fantasy football research and recommendations.">
+    <link rel="canonical" href="https://niam.pro/fantasy-football-agent.html">
+    <script>document.documentElement.classList.add("js")</script>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-qOhFsq0QMV2REqNwk5hGH5bZE9SkX6gt6yeyKdYPv+U='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; media-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <link rel="preload" href="assets/fonts/bricolage-grotesque.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="assets/fonts/dm-sans.woff2" as="font" type="font/woff2" crossorigin>
+    <script defer src="nav.js"></script>
+    <script defer src="/analytics.js"></script>
+    <script defer src="assets/anime.umd.min.js"></script>
+    <script defer src="motion.js"></script>
+    <link rel="stylesheet" href="NiamThePro.css">
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://niam.pro/fantasy-football-agent.html">
+    <meta property="og:title" content="Fantasy Football Agent | Niam LeStourgeon">
+    <meta property="og:description" content="Fantasy Football Agent by Niam LeStourgeon: AI that researches with your brain using Jev, Claude, AWS Lambda, FastAPI, and PostgreSQL for automated fantasy football research and recommendations.">
+    <meta property="og:image" content="https://niam.pro/og-image.jpg">
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://niam.pro/fantasy-football-agent.html">
+    <meta property="twitter:title" content="Fantasy Football Agent | Niam LeStourgeon">
+    <meta property="twitter:description" content="Fantasy Football Agent by Niam LeStourgeon: AI that researches with your brain using Jev, Claude, AWS Lambda, FastAPI, and PostgreSQL for automated fantasy football research and recommendations.">
+    <meta property="twitter:image" content="https://niam.pro/og-image.jpg">
+</head>
+<body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+        <div class="header-inner">
+            <a class="site-brand" href="index.html">Niam LeStourgeon</a>
+            <nav aria-label="Primary">
+                <ul class="menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li class="dropdown">
+                        <a href="skills.html">Skills &amp; Certifications &#9662;</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="data-analytics.html">Data Analytics</a></li>
+                            <li><a href="ai-usage-and-training.html">AI Usage and Training</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="projects.html">Projects &#9662;</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="fantasy-football-agent.html">Fantasy Football Agent</a></li>
+                            <li><a href="farmstead-world.html">Farmstead World</a></li>
+                            <li><a href="tick-forward.html">Tick Forward</a></li>
+                            <li><a href="lamp-light.html">Lamp Light</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main">
+        <section class="hero">
+            <div class="hero-inner container">
+                <p class="eyebrow">Agents / Analytics / AI</p>
+                <h1 class="hero-title">Fantasy Football Agent</h1>
+                <p class="hero-description">The AI that researches with your brain, so that you don't have to.</p>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">The Numbers</h2>
+                </div>
+                <div class="stats-grid">
+                    <div class="card stat-card">
+                        <div class="stat-value" data-count="218">218</div>
+                        <div class="stat-label">Model Calls</div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-value" data-count="119">119</div>
+                        <div class="stat-label">Decisions Served</div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-value" data-count="48">48</div>
+                        <div class="stat-label">Decisions Graded</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container" style="max-width: 1000px;">
+                <div class="media-wrapper" style="aspect-ratio: 1 / 1; max-width: 640px;">
+                    <video controls preload="none" poster="assets/poster-fantasyfootballagent.jpg" playsinline style="object-fit: contain;">
+                        <source src="fantasyfootballagent-video.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <p class="text-center">See it in action: a 56-second walkthrough of how Fantasy Agent researches, decides and grades its own calls, built and shipped end to end.</p>
+                <p class="text-center"><a class="btn btn--primary btn--lg" href="https://footballagent.tech/?utm_source=niampro&utm_medium=referral&utm_campaign=crosspromo" rel="noopener" target="_blank">Visit the live site &rarr;</a></p>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">The Problem</h2>
+                </div>
+                <p class="text-center" style="max-width: 60ch; margin-inline: auto; text-wrap: pretty; line-height: 1.7;">I love football, but to be good at fantasy football, you need to spend hours
+                    watching the games, doing research, really stay on top of the news if you want
+                    to be competitive. Being a student, working a job, spending time with family makes
+                    this intense research difficult and in turn takes away your chances to win your
+                    fantasy league.</p>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">How It Works</h2>
+                </div>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-marker" aria-hidden="true"></div>
+                        <div class="timeline-content">
+                            <h3 class="timeline-title">Your Philosophy</h3>
+                            <p class="timeline-description">You write your philosophy, what you would do in every situation. This is stored to your 
+                                account, and it is referenced before the agent makes any decisions. 
+                            </p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-marker" aria-hidden="true"></div>
+                        <div class="timeline-content">
+                            <h3 class="timeline-title">Your Schedule</h3>
+                            <p class="timeline-description">You choose when you want the emails in your inbox. You can have different engines run 
+                                on different days, such as just the lineup engine on Sunday mornings when you need it most!
+                            </p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-marker" aria-hidden="true"></div>
+                        <div class="timeline-content">
+                            <h3 class="timeline-title">RAG Pipeline Activates</h3>
+                            <p class="timeline-description">An AWS Lambda function kicks off the process, retrieving all the data from news sources, sports APIs and even the weather!</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-marker" aria-hidden="true"></div>
+                        <div class="timeline-content">
+                            <h3 class="timeline-title">AI Takes Over</h3>
+                            <p class="timeline-description">The news is passed into Jev, to decide what articles have fantasy relevance. It excludes any article that is not directly relevant, like a reflection piece. Then Claude takes everything in and analyzes all the data, and makes the recommendations based on your set philosophy.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-marker" aria-hidden="true"></div>
+                        <div class="timeline-content">
+                            <h3 class="timeline-title">Straight to Your Inbox</h3>
+                            <p class="timeline-description">You get your research in your inbox, ready to judge and implement in time for the games.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-marker" aria-hidden="true"></div>
+                        <div class="timeline-content">
+                            <h3 class="timeline-title">Better Than Yesterday</h3>
+                            <p class="timeline-description">All of the AI's calls are graded on how well they worked out. If it makes a bad call, it learns from it and improves for your next week.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Key Decisions</h2>
+                </div>
+                <div class="decisions-grid">
+                    <article class="card decision-card">
+                        <div class="decision-number" aria-hidden="true">01</div>
+                        <h3 class="decision-title">Jev Before Claude</h3>
+                        <p class="decision-description">Putting Jev before Claude was huge. Jev came out for the first time right as I started this project,
+                            so I was uncertain about how well it would work. Jev is a decision model (different from LLMs) that
+                            doesn't return text, it returns a decision and a confidence score. <br> <br>  In this project it looks at football articles
+                            and determines if an article is relevant to fantasy football or not. This is crucial, because all of the
+                            words of the article get passed into Claude, which charges for input "tokens" (a few letters, the measurement of AI computing power)
+                            Jev charges a fraction of the cost for input tokens, so using it to filter out the news articles saves me a ton week to week.
+                        </p>
+                    </article>
+                    <article class="card decision-card">
+                        <div class="decision-number" aria-hidden="true">02</div>
+                        <h3 class="decision-title">Only Using AI Where It Makes Sense</h3>
+                        <div class="decision-description">
+                            <p>There are a lot of "ChatGPT wrappers" out there that are just a pretty ui around ChatGPT or
+                                another such chatbot, which are the ones we're all tired of. The real strength of this project
+                                is in two parts:</p>
+                            <ul>
+                                <li>The research element. Doing all that research to who the best available player is takes a ton of time. This cuts all that out.</li>
+                                <li>Your philosophy. A generic ai doesn't understand how you like to play. Your philosophy that you make guides every decision, which checks to ensure the AI doesn't deviate.</li>
+                            </ul>
+                            <br>
+                            <p>Both of these make this the perfect use for AI for Fantasy Football. No overuse of AI, just using it where it makes sense.
+                                AI integrates into the system to play to its strengths, it doesn't take over the whole system.</p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">What's Next</h2>
+                </div>
+                <div class="card card--bordered">
+                    <p>The AI currently doesn't help at all for draft, which is arguably the most important part of
+                        a good fantasy football team. <br> What's next for me is the <a href="tick-forward.html">Tick Forward project</a> and continuing in my job search.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Tech Stack</h2>
+                </div>
+                <div class="tech-stack">
+                    <span class="tech-tag">Python</span>
+                    <span class="tech-tag">FastAPI</span>
+                    <span class="tech-tag">PostgreSQL</span>
+                    <span class="tech-tag">AWS Lambda/EventBridge/SQS</span>
+                    <span class="tech-tag">AWS CDK</span>
+                    <span class="tech-tag">Claude Code and API</span>
+                    <span class="tech-tag">Jev</span>
+                    <span class="tech-tag">Stripe</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-inner">
+                <p class="footer-copyright">Copyright &copy; 2026 <span class="gold">Niam LeStourgeon.</span> All Rights Reserved</p>
+                <a class="footer-link" href="https://github.com/niamlestou" rel="noopener" target="_blank">GitHub</a>
+                <a class="footer-link" href="https://www.linkedin.com/in/niamlestou" rel="noopener" target="_blank">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

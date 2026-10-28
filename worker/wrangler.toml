@@ -1,0 +1,16 @@
+name = "niam-analytics"
+main = "index.js"
+compatibility_date = "2025-09-01"
+compatibility_flags = ["nodejs_compat"] # collector uses Buffer + timingSafeEqual
+
+# Create once:  npx wrangler d1 create niam-analytics   then paste the printed id below.
+[[d1_databases]]
+binding = "DB"
+database_name = "niam-analytics"
+database_id = "REPLACE_WITH_ID_FROM_d1_create"
+
+# Same-origin routes so the beacon and dashboard need no CORS. Requires niam.pro DNS on Cloudflare (proxied).
+routes = [
+  { pattern = "niam.pro/api/track", zone_name = "niam.pro" },
+  { pattern = "niam.pro/api/admin/*", zone_name = "niam.pro" },
+]

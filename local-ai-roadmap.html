@@ -1,0 +1,977 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Local AI on Financial Data Roadmap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=Figtree:ital,wght@0,400..700;1,400..500&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root {
+  --bg: #f6f6fa;
+  --surface: #ffffff;
+  --surface-2: #efeef7;
+  --ink: #17151f;
+  --ink-2: #45425a;
+  --muted: #625f79;
+  --line: #e2e0ec;
+  --line-strong: #cfcce0;
+  --violet: #7b2ff7;
+  --violet-ink: #5a17cf;
+  --violet-soft: #efe7ff;
+  --azure: #1e90ff;
+  --azure-ink: #0b62c4;
+  --azure-soft: #e3f0ff;
+  --indigo: #5050f8;
+  --good: #11724e;
+  --good-soft: #e0f4ec;
+  --stop: #c0264f;
+  --stop-soft: #fbe6ec;
+  --code-bg: #f0eff7;
+  --shadow: 0 1px 2px rgb(23 21 31 / 0.05), 0 8px 24px -12px rgb(23 21 31 / 0.12);
+  --display: "Archivo", "Arial Narrow", system-ui, sans-serif;
+  --body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #0c0e11;
+    --surface: #14161c;
+    --surface-2: #1a1d25;
+    --ink: #eceaf4;
+    --ink-2: #bcb9cf;
+    --muted: #8f8ca6;
+    --line: #262a34;
+    --line-strong: #353a47;
+    --violet-ink: #b794ff;
+    --violet-soft: #231a3a;
+    --azure-ink: #6cb3ff;
+    --azure-soft: #0f2238;
+    --good: #45c796;
+    --good-soft: #0f2a21;
+    --stop: #ff7a9c;
+    --stop-soft: #33141f;
+    --code-bg: #1b1e27;
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 10px 30px -14px rgb(0 0 0 / 0.6);
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0c0e11;
+  --surface: #14161c;
+  --surface-2: #1a1d25;
+  --ink: #eceaf4;
+  --ink-2: #bcb9cf;
+  --muted: #8f8ca6;
+  --line: #262a34;
+  --line-strong: #353a47;
+  --violet-ink: #b794ff;
+  --violet-soft: #231a3a;
+  --azure-ink: #6cb3ff;
+  --azure-soft: #0f2238;
+  --good: #45c796;
+  --good-soft: #0f2a21;
+  --stop: #ff7a9c;
+  --stop-soft: #33141f;
+  --code-bg: #1b1e27;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 10px 30px -14px rgb(0 0 0 / 0.6);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 24px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 16px/1.62 var(--body);
+  padding-inline: 20px;
+  padding-block: 0 64px;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--violet-ink); text-underline-offset: 3px; text-decoration-thickness: 1px; }
+a:hover { text-decoration-thickness: 2px; }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible {
+  outline: 2px solid var(--azure); outline-offset: 2px; border-radius: 4px;
+}
+code, .mono { font-family: var(--mono); font-size: 0.88em; }
+:not(pre) > code { background: var(--code-bg); padding: 0.1em 0.35em; border-radius: 4px; }
+pre {
+  font: 400 13px/1.55 var(--mono);
+  background: var(--code-bg);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px 16px;
+  overflow-x: auto;
+  margin: 0;
+}
+strong { font-weight: 650; }
+h1, h2, h3, h4 { font-family: var(--display); text-wrap: balance; margin: 0; color: var(--ink); }
+p { margin: 0; }
+ul, ol { margin: 0; padding-left: 1.25em; }
+li + li { margin-top: 0.35em; }
+
+/* ---------- Shell ---------- */
+.shell { max-width: 1180px; margin-inline: auto; }
+.masthead {
+  padding-block: 56px 36px;
+  border-bottom: 1px solid var(--line);
+  display: grid;
+  gap: 18px;
+}
+.brandline {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  font: 600 12px/1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
+}
+.brandmark {
+  font: 800 15px/1 var(--display); font-stretch: 125%; letter-spacing: 0.02em; color: var(--ink); text-transform: none;
+}
+.brandmark span { color: var(--violet-ink); }
+.masthead h1 {
+  font-size: clamp(34px, 5.4vw, 60px);
+  font-weight: 800;
+  font-stretch: 118%;
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+  max-width: 16ch;
+}
+.lede { font-size: clamp(17px, 1.6vw, 19px); color: var(--ink-2); max-width: 64ch; }
+.meta { display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 14px; color: var(--muted); }
+.meta b { color: var(--ink-2); font-weight: 600; }
+
+.layout { display: grid; grid-template-columns: 1fr; gap: 40px; padding-top: 36px; }
+@media (min-width: 900px) {
+  .layout { grid-template-columns: 220px minmax(0, 1fr); gap: 44px; }
+}
+
+/* ---------- Table of contents ---------- */
+.toc { font-size: 14px; }
+.toc details { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+.toc summary { cursor: pointer; padding: 12px 16px; font-weight: 650; list-style: none; display: flex; justify-content: space-between; }
+.toc summary::-webkit-details-marker { display: none; }
+.toc summary::after { content: "+"; font-family: var(--mono); color: var(--muted); }
+.toc details[open] summary::after { content: "–"; }
+.toc ol { list-style: none; padding: 0 16px 14px; margin: 0; display: grid; gap: 2px; }
+.toc li { margin: 0; }
+.toc a { display: block; padding: 5px 0; color: var(--ink-2); text-decoration: none; line-height: 1.35; }
+.toc a:hover { color: var(--violet-ink); }
+.toc .sub a { padding-left: 14px; font-size: 13px; color: var(--muted); }
+@media (min-width: 900px) {
+  .toc { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 24px); align-self: start; max-height: calc(100vh - 48px); overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--line-strong) transparent; }
+  .toc details { border: 0; background: none; }
+  .toc summary { padding: 0 0 12px 2px; pointer-events: none; font: 600 11px/1 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+  .toc summary::after { content: none; }
+  .toc ol { padding: 0; gap: 0; border-left: 1px solid var(--line); }
+  .toc a {
+    padding: 6px 10px 6px 16px; margin-left: -1px; border-left: 2px solid transparent; border-radius: 0 8px 8px 0;
+    transition: color .15s ease, background-color .15s ease, border-color .15s ease, padding-left .15s ease;
+  }
+  .toc a:hover { color: var(--violet-ink); background: var(--violet-soft); border-left-color: var(--violet); padding-left: 20px; }
+  .toc a.is-active { color: var(--violet-ink); font-weight: 650; border-left-color: var(--violet); background: color-mix(in srgb, var(--violet-soft) 55%, transparent); }
+  .toc .sub a { padding-left: 28px; }
+  .toc .sub a:hover { padding-left: 32px; }
+  @media (prefers-reduced-motion: reduce) { .toc a, .toc a:hover { transition: none; padding-left: 16px; } }
+}
+
+/* ---------- Sections ---------- */
+main { min-width: 0; display: grid; gap: 72px; }
+section { display: grid; gap: 22px; min-width: 0; }
+.kicker { font: 600 11.5px/1 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--violet-ink); }
+section > header { display: grid; gap: 10px; }
+h2 { font-size: clamp(26px, 3vw, 34px); font-weight: 780; font-stretch: 112%; line-height: 1.12; letter-spacing: -0.01em; }
+h3 { font-size: 21px; font-weight: 720; font-stretch: 106%; line-height: 1.25; }
+h4 { font: 650 12px/1.2 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.prose { display: grid; gap: 14px; max-width: 70ch; color: var(--ink-2); }
+.prose strong { color: var(--ink); }
+
+/* ---------- Bottom line ---------- */
+.bluf {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: clamp(20px, 3vw, 32px);
+  display: grid;
+  gap: 26px;
+}
+.figures { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
+.figure { border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; display: grid; gap: 6px; background: var(--bg); }
+.figure .num { font: 780 clamp(28px, 3.2vw, 36px)/1 var(--display); font-stretch: 108%; font-variant-numeric: tabular-nums; color: var(--ink); }
+.figure .num small { font-size: 0.5em; font-weight: 600; color: var(--muted); margin-left: 2px; }
+.figure .lbl { font-size: 14px; color: var(--ink-2); line-height: 1.4; }
+.figure.accent { border-color: color-mix(in srgb, var(--violet) 45%, var(--line)); background: var(--violet-soft); }
+.recs { display: grid; gap: 10px; counter-reset: rec; list-style: none; padding: 0; }
+.recs li { margin: 0; display: grid; grid-template-columns: 26px 1fr; gap: 10px; color: var(--ink-2); }
+.recs li::before {
+  counter-increment: rec; content: counter(rec);
+  font: 600 12px/26px var(--mono); text-align: center; width: 26px; height: 26px; border-radius: 50%;
+  background: var(--violet); color: #fff;
+}
+.recs li strong { color: var(--ink); }
+.two-col { display: grid; gap: 22px; }
+@media (min-width: 820px) { .two-col { grid-template-columns: 1fr 1fr; } }
+.decide { border-top: 1px dashed var(--line-strong); padding-top: 20px; display: grid; gap: 10px; }
+.decide ul { color: var(--ink-2); }
+
+/* ---------- Hosting targets ---------- */
+.targets { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+.target { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px 18px 20px; display: grid; gap: 10px; align-content: start; }
+.target h3 { font-size: 18px; }
+.target p { color: var(--ink-2); font-size: 15px; }
+.target .where { font: 500 12.5px/1.4 var(--mono); color: var(--azure-ink); }
+.target ul { font-size: 14.5px; color: var(--ink-2); }
+
+/* ---------- Architecture lanes ---------- */
+.arch { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 10px; display: grid; gap: 8px; }
+.lane { display: grid; grid-template-columns: 1fr; gap: 8px; padding: 12px; border-radius: 10px; background: var(--bg); }
+@media (min-width: 760px) { .lane { grid-template-columns: 150px 1fr; align-items: start; } }
+.lane-name { font: 600 11.5px/1.3 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); padding-top: 7px; }
+.lane-name b { display: block; font: 700 14px/1.3 var(--display); letter-spacing: 0; text-transform: none; color: var(--ink); }
+.nodes { display: flex; flex-wrap: wrap; gap: 8px; }
+.node {
+  border: 1px solid var(--line-strong); background: var(--surface); border-radius: 8px; padding: 7px 11px;
+  font-size: 13.5px; line-height: 1.3; display: grid; gap: 1px;
+}
+.node small { color: var(--muted); font-size: 12px; }
+.node.v { border-color: color-mix(in srgb, var(--violet) 55%, var(--line)); background: var(--violet-soft); }
+.node.a { border-color: color-mix(in srgb, var(--azure) 55%, var(--line)); background: var(--azure-soft); }
+.group { border: 1px dashed var(--line-strong); border-radius: 10px; padding: 8px; display: grid; gap: 6px; flex: 1 1 260px; }
+.group-label { font: 600 11px/1.2 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.flows { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.flow { border-left: 3px solid var(--azure); padding: 4px 0 4px 14px; font-size: 14.5px; color: var(--ink-2); }
+.flow b { display: block; color: var(--ink); font-weight: 650; margin-bottom: 2px; }
+.flow.v { border-left-color: var(--violet); }
+.flow.i { border-left-color: var(--indigo); }
+
+/* ---------- Service cards ---------- */
+.service { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
+.service > header {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; padding: 18px 22px; border-bottom: 1px solid var(--line);
+}
+.service > header h3 { font-size: 23px; margin-right: auto; }
+.chip {
+  font: 600 11.5px/1 var(--mono); letter-spacing: 0.04em; padding: 6px 9px; border-radius: 999px;
+  background: var(--surface-2); color: var(--ink-2); border: 1px solid var(--line); white-space: nowrap;
+}
+.chip.cost { background: var(--violet-soft); color: var(--violet-ink); border-color: transparent; }
+.chip.pref { background: var(--azure-soft); color: var(--azure-ink); border-color: transparent; }
+.svc-body { padding: 20px 22px 24px; display: grid; gap: 22px; }
+.facets { display: grid; gap: 18px 28px; grid-template-columns: 1fr; }
+@media (min-width: 760px) { .facets { grid-template-columns: 1fr 1fr; } }
+.facet { display: grid; gap: 6px; align-content: start; }
+.facet p, .facet li { font-size: 15px; color: var(--ink-2); }
+.facet ul { display: grid; gap: 4px; }
+.facet li + li { margin-top: 0; }
+.setup { border-top: 1px solid var(--line); padding-top: 18px; display: grid; gap: 10px; }
+.setup ol { display: grid; gap: 8px; padding-left: 1.4em; }
+.setup li { font-size: 15px; color: var(--ink-2); padding-left: 4px; }
+.setup li + li { margin-top: 0; }
+.setup li::marker { font: 600 13px var(--mono); color: var(--violet-ink); }
+.note {
+  border-radius: 10px; padding: 12px 14px; font-size: 14.5px; color: var(--ink-2);
+  background: var(--azure-soft); border: 1px solid color-mix(in srgb, var(--azure) 30%, transparent);
+}
+.note.stop { background: var(--stop-soft); border-color: color-mix(in srgb, var(--stop) 35%, transparent); }
+.note.good { background: var(--good-soft); border-color: color-mix(in srgb, var(--good) 35%, transparent); }
+.note b { color: var(--ink); }
+.stack-list { display: grid; gap: 18px; }
+
+/* ---------- Tables ---------- */
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 14.5px; min-width: 560px; }
+th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font: 600 11.5px/1.3 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); background: var(--surface-2); }
+tbody tr:last-child td { border-bottom: 0; }
+td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; font-family: var(--mono); font-size: 13.5px; }
+tr.total td { font-weight: 700; color: var(--ink); background: var(--violet-soft); }
+tr.total td.n { font-size: 14px; }
+td .sub { display: block; color: var(--muted); font-size: 13px; margin-top: 2px; }
+.dim { color: var(--muted); }
+
+/* ---------- Estimator ---------- */
+.estimator { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); padding: clamp(18px, 3vw, 28px); display: grid; gap: 22px; }
+.est-grid { display: grid; gap: 22px; }
+@media (min-width: 860px) { .est-grid { grid-template-columns: 1.1fr 1fr; } }
+.controls { display: grid; gap: 18px; }
+.control { display: grid; gap: 6px; }
+.control label { font-weight: 600; font-size: 14.5px; display: flex; justify-content: space-between; gap: 12px; }
+.control output { font: 600 14px var(--mono); color: var(--violet-ink); font-variant-numeric: tabular-nums; }
+input[type="range"] { width: 100%; accent-color: var(--violet); }
+select {
+  font: inherit; font-size: 15px; color: var(--ink); background: var(--bg); border: 1px solid var(--line-strong);
+  border-radius: 8px; padding: 9px 10px; width: 100%;
+}
+.results { display: grid; gap: 10px; align-content: start; }
+.res-row { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 15px; color: var(--ink-2); }
+.res-row b { font: 600 15px var(--mono); color: var(--ink); font-variant-numeric: tabular-nums; }
+.res-total { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding-top: 6px; }
+.res-total span { font-weight: 650; }
+.res-total b { font: 780 34px/1 var(--display); font-stretch: 108%; color: var(--violet-ink); font-variant-numeric: tabular-nums; }
+.est-foot { font-size: 13.5px; color: var(--muted); }
+
+/* ---------- API section ---------- */
+.steps { display: grid; gap: 10px; list-style: none; padding: 0; counter-reset: st; }
+.steps li { margin: 0; display: grid; grid-template-columns: 34px 1fr; gap: 12px; align-items: start; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; color: var(--ink-2); font-size: 15px; }
+.steps li::before {
+  counter-increment: st; content: counter(st);
+  font: 700 13px/30px var(--mono); text-align: center; width: 30px; height: 30px; border-radius: 8px;
+  background: var(--azure-soft); color: var(--azure-ink);
+}
+.steps li b { color: var(--ink); }
+.compare { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.opt { border: 1px solid var(--line); border-radius: 12px; padding: 16px; background: var(--surface); display: grid; gap: 8px; align-content: start; }
+.opt.pick { border-color: color-mix(in srgb, var(--violet) 55%, var(--line)); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--violet) 30%, transparent); }
+.opt h4 { display: flex; gap: 8px; align-items: center; }
+.tag { font: 600 10.5px/1 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; padding: 4px 7px; border-radius: 999px; background: var(--violet); color: #fff; }
+.opt p, .opt li { font-size: 14.5px; color: var(--ink-2); }
+
+/* ---------- Tools verdicts ---------- */
+.verdict { display: inline-block; font: 600 11.5px/1 var(--mono); letter-spacing: 0.04em; padding: 6px 9px; border-radius: 6px; }
+.verdict.now { background: var(--good-soft); color: var(--good); }
+.verdict.later { background: var(--azure-soft); color: var(--azure-ink); }
+.verdict.opt { background: var(--surface-2); color: var(--ink-2); }
+
+/* ---------- Stages ---------- */
+.stages { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.stage { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px; display: grid; gap: 10px; align-content: start; }
+.stage .when { font: 600 12px/1.3 var(--mono); color: var(--azure-ink); }
+.stage p, .stage li { font-size: 14.5px; color: var(--ink-2); }
+.stage .trig { border-top: 1px dashed var(--line-strong); padding-top: 10px; }
+
+.checklist { list-style: none; padding: 0; display: grid; gap: 8px; }
+.checklist li { margin: 0; display: grid; grid-template-columns: 22px 1fr; gap: 10px; font-size: 15px; color: var(--ink-2); }
+.checklist li::before { content: ""; width: 16px; height: 16px; margin-top: 4px; border: 1.5px solid var(--line-strong); border-radius: 4px; background: var(--surface); }
+.week { display: grid; gap: 12px; }
+.week h3 { font-size: 17px; }
+
+.sources { columns: 1; column-gap: 32px; font-size: 14px; }
+@media (min-width: 820px) { .sources { columns: 2; } }
+.sources section { break-inside: avoid; display: block; margin-bottom: 18px; }
+.sources h4 { margin-bottom: 6px; }
+.sources ul { list-style: none; padding: 0; }
+.sources li { margin: 0 0 4px; color: var(--muted); }
+
+footer.end { border-top: 1px solid var(--line); margin-top: 72px; padding-top: 22px; font-size: 13.5px; color: var(--muted); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; }
+</style>
+<style>
+/* ---------- SEO plan additions ---------- */
+.timeline { display: grid; gap: 0; border-left: 2px solid var(--line-strong); margin-left: 8px; }
+.phase { position: relative; padding: 0 0 26px 26px; display: grid; gap: 10px; }
+.phase:last-child { padding-bottom: 0; }
+.phase::before {
+  content: ""; position: absolute; left: -9px; top: 4px; width: 16px; height: 16px; border-radius: 50%;
+  background: var(--surface); border: 3px solid var(--violet);
+}
+.phase.later::before { border-color: var(--azure); }
+.phase-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; }
+.phase-head .when { font: 600 12.5px/1.2 var(--mono); color: var(--violet-ink); }
+.phase.later .when { color: var(--azure-ink); }
+.phase-head h3 { font-size: 19px; }
+.tracks { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.track { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
+.track h4 { margin-bottom: 6px; }
+.track ul { font-size: 14.5px; color: var(--ink-2); display: grid; gap: 4px; }
+.track li + li { margin-top: 0; }
+.expect { font-size: 14.5px; color: var(--ink-2); background: var(--good-soft); border-radius: 10px; padding: 10px 12px; }
+.expect b { color: var(--ink); }
+
+.pill { display: inline-block; font: 600 11px/1 var(--mono); letter-spacing: 0.03em; padding: 5px 8px; border-radius: 999px; white-space: nowrap; }
+.pill.low { background: var(--good-soft); color: var(--good); }
+.pill.mid { background: var(--azure-soft); color: var(--azure-ink); }
+.pill.high { background: var(--stop-soft); color: var(--stop); }
+
+.answer { border-radius: 14px; padding: 18px 20px; display: grid; gap: 10px; background: var(--violet-soft); border: 1px solid color-mix(in srgb, var(--violet) 35%, transparent); }
+.answer .verdict-line { font: 750 20px/1.3 var(--display); font-stretch: 106%; color: var(--ink); }
+.answer p { color: var(--ink-2); }
+
+.script { background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--violet); border-radius: 10px; padding: 14px 16px; font-size: 15px; color: var(--ink-2); display: grid; gap: 8px; }
+.script p b { color: var(--ink); }
+
+.slots { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+.slot { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 8px; align-content: start; }
+.slot .count { font: 780 30px/1 var(--display); font-stretch: 108%; color: var(--violet-ink); font-variant-numeric: tabular-nums; }
+.slot h3 { font-size: 17px; }
+.slot p, .slot li { font-size: 14.5px; color: var(--ink-2); }
+.slot dl { display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; font-size: 14px; margin: 0; }
+.slot dt { font: 600 11px/1.6 var(--mono); letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+.slot dd { margin: 0; color: var(--ink-2); }
+
+.weekly { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); padding: clamp(18px, 3vw, 28px); display: grid; gap: 18px; }
+.weekly-top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; }
+.progress { font: 600 14px var(--mono); color: var(--violet-ink); font-variant-numeric: tabular-nums; }
+.btn {
+  font: 600 14px var(--body); color: var(--ink); background: var(--surface-2); border: 1px solid var(--line-strong);
+  border-radius: 8px; padding: 8px 12px; cursor: pointer;
+}
+.btn:hover { border-color: var(--violet); }
+.task-group { display: grid; gap: 6px; }
+.task-group h3 { font-size: 16px; display: flex; justify-content: space-between; gap: 10px; }
+.task-group h3 span { font: 500 12.5px var(--mono); color: var(--muted); }
+.task { display: grid; grid-template-columns: 22px 1fr; gap: 10px; align-items: start; padding: 8px 10px; border-radius: 8px; font-size: 15px; color: var(--ink-2); cursor: pointer; }
+.task:hover { background: var(--surface-2); }
+.task input { width: 18px; height: 18px; margin-top: 3px; accent-color: var(--violet); cursor: pointer; }
+.task input:checked + span { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--line-strong); }
+.task small { display: block; color: var(--muted); font-size: 13px; margin-top: 2px; text-decoration: none; }
+.cadence { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+</style>
+<style>
+/* ---------- Roadmap additions ---------- */
+:root { --seg1: #7b2ff7; --seg2: #5050f8; --seg3: #1e90ff; --seg4: #b9a3f5; --seg5: #b6b3c9; --segink: #17151f; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --seg1: #7f3df5; --seg2: #5a5af0; --seg3: #3a9bff; --seg4: #4a3a7a; --seg5: #3a3d4c; --segink: #eceaf4; } }
+:root[data-theme="dark"] { --seg1: #7f3df5; --seg2: #5a5af0; --seg3: #3a9bff; --seg4: #4a3a7a; --seg5: #3a3d4c; --segink: #eceaf4; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.fchip { font: 600 12.5px/1 var(--mono); padding: 9px 12px; border-radius: 999px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink-2); cursor: pointer; }
+.fchip:hover { border-color: var(--violet); }
+.fchip[aria-pressed="true"] { background: var(--violet); border-color: var(--violet); color: #fff; }
+.pcard { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; min-width: 0; }
+.pcard > header { display: grid; gap: 8px; padding: 18px 22px; border-bottom: 1px solid var(--line); }
+.pcard .ph-top { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; }
+.pcard .ph-top h3 { font-size: 23px; margin-right: auto; }
+.pcard .when { font: 600 12.5px/1.2 var(--mono); color: var(--violet-ink); }
+.pcard .goal { color: var(--ink-2); max-width: 70ch; }
+.pbody { padding: 18px 22px 22px; display: grid; gap: 22px; }
+.wsg { display: grid; gap: 2px; }
+.wsg h4 { padding-bottom: 4px; }
+.task b { color: var(--ink); font-weight: 650; }
+.task .tm { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 4px; font: 500 11.5px/1.4 var(--mono); color: var(--muted); text-decoration: none; }
+.task .tm i { font-style: normal; }
+.gate { border: 1px dashed var(--line-strong); border-radius: 12px; padding: 14px 16px; display: grid; gap: 8px; background: var(--good-soft); }
+.gate ul { font-size: 14.5px; color: var(--ink-2); display: grid; gap: 4px; }
+.gate li + li { margin-top: 0; }
+.pprog { font: 600 13px var(--mono); color: var(--violet-ink); font-variant-numeric: tabular-nums; }
+.glance th:first-child, .glance td:first-child { position: sticky; left: 0; background: var(--surface); z-index: 1; min-width: 140px; font-weight: 650; color: var(--ink); }
+.glance th:first-child { background: var(--surface-2); }
+.glance td { font-size: 14px; color: var(--ink-2); min-width: 190px; }
+.glance table { min-width: 900px; }
+.sb { display: grid; gap: 10px; }
+.sb-row { display: grid; grid-template-columns: 1fr; gap: 6px; }
+@media (min-width: 760px) { .sb-row { grid-template-columns: 170px 1fr 120px; align-items: center; gap: 14px; } }
+.sb-label { font-weight: 650; font-size: 14.5px; }
+.sb-label small { display: block; font: 500 12px var(--mono); color: var(--muted); }
+.sb-track { position: relative; display: flex; height: 34px; border-radius: 8px; overflow: hidden; background: var(--surface-2); border: 1px solid var(--line); }
+.seg { display: grid; place-items: center; font: 600 12px var(--mono); color: #fff; min-width: 0; overflow: hidden; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.seg.s1 { background: var(--seg1); } .seg.s2 { background: var(--seg2); } .seg.s3 { background: var(--seg3); color: #08121f; }
+.seg.s4 { background: var(--seg4); color: var(--segink); } .seg.s5 { background: var(--seg5); color: var(--segink); }
+.sb-note { font: 600 12.5px var(--mono); font-variant-numeric: tabular-nums; color: var(--ink-2); }
+.sb-note.over { color: var(--stop); }
+.cap-line { position: absolute; top: -2px; bottom: -2px; width: 0; border-left: 2px dashed var(--ink); z-index: 2; pointer-events: none; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 13.5px; color: var(--ink-2); }
+.legend span::before { content: ""; display: inline-block; width: 11px; height: 11px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; background: var(--c); border: 1px solid var(--line-strong); }
+.rule { display: grid; gap: 4px; padding: 12px 14px; border: 1px solid var(--line); border-left: 3px solid var(--violet); border-radius: 10px; background: var(--surface); }
+.rule b.if, .rule b.then { font: 700 11px/1.4 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; margin-right: 8px; }
+.rule b.if { color: var(--azure-ink); } .rule b.then { color: var(--violet-ink); }
+.rules { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+.verdict.never { background: var(--stop-soft); color: var(--stop); }
+.mono-s { font: 500 12.5px/1.4 var(--mono); color: var(--muted); }
+.cal td:first-child { white-space: nowrap; font-weight: 650; color: var(--ink); }
+.cal td { font-size: 14px; }
+.cal table { min-width: 860px; }
+</style>
+<style>
+/* ---------- Template additions: collapsibles and FAQ ---------- */
+.folds { display: grid; gap: 10px; }
+.fold { border: 1px solid var(--line); border-radius: 14px; background: var(--surface); overflow: hidden; }
+.fold > summary {
+  cursor: pointer; list-style: none; display: flex; align-items: center; gap: 10px 12px; flex-wrap: wrap;
+  padding: 16px 20px; font: 720 18px/1.3 var(--display); font-stretch: 106%; color: var(--ink);
+}
+.fold > summary::-webkit-details-marker { display: none; }
+.fold > summary::after { content: "+"; margin-left: auto; font: 600 20px/1 var(--mono); color: var(--violet-ink); }
+.fold[open] > summary::after { content: "–"; }
+.fold > summary:hover { background: var(--surface-2); }
+.fold[open] > summary { border-bottom: 1px solid var(--line); }
+.fold-body { padding: 18px 20px 22px; display: grid; gap: 16px; min-width: 0; }
+.fold-tools { display: flex; gap: 8px; flex-wrap: wrap; }
+.faq-group { display: grid; gap: 0; }
+.faq-group > h3 { font-size: 17px; margin-bottom: 8px; }
+.faq details { border-bottom: 1px solid var(--line); }
+.faq-group details:first-of-type { border-top: 1px solid var(--line); }
+.faq summary {
+  cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: baseline; gap: 16px;
+  padding: 14px 4px; font: 650 16px/1.4 var(--body); color: var(--ink);
+}
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; flex: none; font: 600 18px/1 var(--mono); color: var(--violet-ink); }
+.faq details[open] > summary::after { content: "–"; }
+.faq summary:hover { color: var(--violet-ink); }
+.faq .answer-body { padding: 0 4px 18px; display: grid; gap: 10px; max-width: 70ch; color: var(--ink-2); }
+/* ---------- Template additions: print ---------- */
+@media print {
+  body { padding-inline: 0; background: #fff; }
+  .toc, .chips, .btn, .fold-tools, input[type="range"] { display: none !important; }
+  .layout { grid-template-columns: 1fr; }
+  .bluf, .estimator, .weekly { box-shadow: none; }
+  section, .pcard, .service, .stage, .slot, .rule, .opt, .target { break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <header class="masthead">
+    <div class="brandline"><span class="brandmark">Tick Forward<span>.</span></span><span>Roadmap</span></div>
+    <h1>Pointing local AI at financial data</h1>
+    <p class="lede">A dated record of every attempt to use a local model (Laya, then Qwen) on market data, how each attempt ended, and what is still open.</p>
+    <div class="meta">
+      <span><b>Prepared for</b> Niam, owner of the Laya trading bot project</span>
+      <span><b>Scope</b> Five systems (indexes, stocks, FX, futures, commodities)</span>
+      <span><b>Builds on</b> Indexes_Conclusion.md, docs/LAYA_ROLES.md, PREREGISTRATION H1–H6, the Qwen reports</span>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav class="toc" aria-label="Contents">
+      <details open id="toc">
+        <summary>Contents</summary>
+        <ol>
+          <li><a href="#bottom-line">Bottom line</a></li>
+          <li><a href="#narrative">The cast and the method</a></li>
+          <li><a href="#timeline">Timeline</a></li>
+          <li><a href="#status">Every attempt, and its end</a></li>
+          <li><a href="#scorecard">The numbers</a></li>
+          <li><a href="#verdicts">Open, closed, later</a></li>
+          <li><a href="#rules">Rules and risks</a></li>
+          <li><a href="#recommendation">What next</a></li>
+          <li><a href="#sources">Sources</a></li>
+        </ol>
+      </details>
+    </nav>
+
+    <main>
+
+      <section id="bottom-line" aria-labelledby="h-bluf">
+        <header><p class="kicker">Bottom line</p><h2 id="h-bluf">No local model has yet earned a trading role; one thin Qwen signal on mid-cap stocks is the only lead left.</h2></header>
+        <div class="bluf">
+          <div class="figures">
+            <div class="figure accent"><span class="num">0.93<small> vs 0.69</small></span><span class="lbl">Validation AUC for "disorderly day": a plain logistic formula against the best Laya checkpoint. Numbers went to the formula on October 21.</span></div>
+            <div class="figure"><span class="num">~96</span><span class="lbl">Variants tried on SPY and QQQ against a pre-registered budget of 5. None was positive after costs on validation.</span></div>
+            <div class="figure"><span class="num">+0.012<small> AUC</small></span><span class="lbl">The only data-gate pass: Qwen headline fields on mid-cap stocks, 5-day label. The interval's lower bound is +0.0001.</span></div>
+            <div class="figure"><span class="num">0</span><span class="lbl">Paper orders ever placed, and test windows ever opened. Every verdict so far is on training or validation data.</span></div>
+          </div>
+          <div class="two-col">
+            <div class="prose">
+              <h3>Do this next</h3>
+              <ol class="recs">
+                <li><span><strong>Run H5's next gate on the mid-cap lead.</strong> The pre-registration's order is: validation book net of 20 bps, then the Qwen2.5 robustness check, then one test look.</span></li>
+                <li><span><strong>Commit and hash the freezes.</strong> H5 and H6 still carry the placeholder sha <code>abc1234</code>, and <code>datagate_runs.jsonl</code> and <code>h5_run.py</code> are untracked.</span></li>
+                <li><span><strong>Start the nightly archiver.</strong> Forward headlines and scores cannot be bought back, and the text roles only count on days after the cutoff.</span></li>
+              </ol>
+              <div class="note"><b>Process, not advice.</b> This is an engineering record. Nothing here is investment advice or a trading recommendation.</div>
+            </div>
+            <div class="prose">
+              <h3>What this report adds</h3>
+              <ul>
+                <li><strong>One timeline</strong> built from git history, run logs and file dates, which no single repo document has.</li>
+                <li><strong>One ledger</strong> of 15 attempts with the number that ended each.</li>
+                <li><strong>An honest "not proved" list,</strong> separating no edge found from no edge exists.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="decide">
+            <h4>Decisions only you can make</h4>
+            <ul>
+              <li>Whether to open the H6 test window (vol-sized SPY). Validation gave +0.05 [-0.24, +0.34], so the likely outcome is "inconclusive".</li>
+              <li>Whether to freeze <code>PREREGISTRATION_H3_DRAFT.md</code> so Laya's event reader can be judged on forward days.</li>
+              <li>Whether to freeze the other drafts for futures, commodities and FX. See <a href="#verdicts">open, closed, later</a>.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="narrative" aria-labelledby="h-narr">
+        <header><p class="kicker">Context</p><h2 id="h-narr">The cast and the method</h2></header>
+        <div class="prose">
+          <p>It began as a paper-trading bot for SPY and QQQ and became a research program asking one question: <strong>can a small local model add predictive power that a plain regression cannot?</strong></p>
+          <p>Every attempt was held to the same method. A hypothesis and a variant budget are written down first. Data is split into train, validation and test by date. Any new data goes to a ridge logistic before a model sees it (<code>bot/datagate.py</code>), and a result counts only if its 95% day-block interval excludes zero.</p>
+        </div>
+        <div class="two-col">
+          <div class="prose"><h3>The local models</h3>
+            <ul>
+              <li><strong>Laya:</strong> a ModernBERT encoder with a typed head, served locally by <code>laya-serve</code>. Checkpoint <code>typed-decisions</code> is pinned; fine-tunes are <code>ft1</code>, <code>ft2a/b/c</code>, <code>laya-tb</code>, <code>stocks_ft</code> and <code>fx_ft</code>.</li>
+              <li><strong>Qwen3-4B-Instruct-2507:</strong> a 4-bit model run through Ollama on a 4 GB GPU. It fills fixed fields per headline (battery <code>tx1</code>).</li>
+              <li><strong>Qwen fine-tunes <code>d1</code> and <code>d2</code>:</strong> adapters trained on headline direction.</li>
+            </ul></div>
+          <div class="prose"><h3>Not local, and why it is here</h3>
+            <ul>
+              <li>TypeSafe's Jev gated the first replay. It was removed when the project committed to Laya, so reports call it "the earlier model".</li>
+              <li>The ridge logistic is not a local AI model, but it is the yardstick every model had to beat.</li>
+            </ul></div>
+        </div>
+      </section>
+
+      <section id="timeline" aria-labelledby="h-time">
+        <header><p class="kicker">Timeline</p><h2 id="h-time">Nine days, eight phases</h2></header>
+        <div class="prose"><p>Times come from run logs and file dates, in the PC's local time. Commits have dates only. The azure phase marks work that is still open.</p></div>
+        <div class="timeline">
+          <div class="phase">
+            <div class="phase-head"><h3>Build the bot and pick an idea</h3></div>
+            <div class="tracks">
+              <div class="track"><h4>Build</h4><ul><li>Analytics dashboard with a roadmap view, bot modules, tests and config.</li><li>SPY/QQQ intraday momentum philosophy drafted.</li></ul></div>
+              <div class="track"><h4>Research</h4><ul><li>Cost-wall study: crypto and market making lose to fees (30–52 bps round trip against 12–22 bps moves).</li><li>Chose momentum on SPY/QQQ, with Laya as a gate only.</li></ul></div>
+            </div>
+            <p class="expect"><b>By end of day:</b> a bot that can observe and replay, and a first model role: gate the entry rule.</p>
+          </div>
+          <div class="phase">
+            <div class="phase-head"><h3>Rule, replay and the first verdict</h3></div>
+            <div class="tracks">
+              <div class="track"><h4>Build</h4><ul><li>Baseline rule, risk engine, decision ladder, replay simulator, review agent, main loop, order manager and chaos tests.</li></ul></div>
+              <div class="track"><h4>Results</h4><ul><li>05:44: one-change screen, 12 variants. None positive; the rule's gross was -0.04 bps per trade.</li><li>06:27: H1 frozen. 06:50–07:31: Phase 6 replay with the earlier hosted model as gate. Stress result -5.13 bps/trade on train, -3.16 on validation.</li></ul></div>
+            </div>
+            <p class="expect"><b>By midday:</b> the rule had nothing for a gate to save. The earlier model was dropped the same day.</p>
+          </div>
+          <div class="phase">
+            <div class="phase-head"><h3>Laya takes over and is fine-tuned</h3></div>
+            <div class="tracks">
+              <div class="track"><h4>Overlay tests</h4><ul><li>09:51–15:33: H2, hold SPY and step aside on days the model rates disorderly. 33 variants, all worse than buy-and-hold.</li><li>15:33: H2-L, same overlay with a logistic gate: -4.31 bps/day against buy-and-hold.</li></ul></div>
+              <div class="track"><h4>Laya training</h4><ul><li>Fine-tunes <code>ft1</code>, <code>ft2a</code>, <code>ft2b</code>, <code>ft2c</code>: calibrated, no skill.</li><li>Stocks (4,399 rows, 12 epochs) and FX checkpoints trained: no measured edge.</li></ul></div>
+              <div class="track"><h4>Live</h4><ul><li>One partial live session, 12:29–15:59 ET: 422 snapshots, 0 model calls, 0 orders.</li><li>A PC clock-skew bug stopped the collector; a guard was added.</li></ul></div>
+            </div>
+            <p class="expect"><b>By evening:</b> five strategy families and six schools all negative on validation; SIP and spread checks done.</p>
+          </div>
+          <div class="phase">
+            <div class="phase-head"><h3>Laya's roles are redesigned</h3></div>
+            <div class="tracks">
+              <div class="track"><h4>Gates</h4><ul><li>06:10: <code>context</code> and <code>news</code> data gates both FAIL.</li><li>06:49: roles redesigned. The logistic judges numbers; Laya reads text and ties.</li></ul></div>
+              <div class="track"><h4>Tie-breaker</h4><ul><li>07:42–08:50: tie-break replay on validation, worse than the gate alone.</li><li>09:22: stack test and nonlinear ceiling FAIL. The tie-breaker was retired the day it was built.</li></ul></div>
+              <div class="track"><h4>Reorganise</h4><ul><li>Indexes concluded: no edge found, not proved none.</li><li>Repo split into five systems. Stocks daily Phase 1 (S&amp;P 500, 2016–2026) measured the cost wall.</li></ul></div>
+            </div>
+            <p class="expect"><b>By noon:</b> the numeric role of local AI was closed and the project turned to text and to single stocks.</p>
+          </div>
+          <div class="phase">
+            <div class="phase-head"><h3>Daily scenarios and the Qwen build</h3></div>
+            <div class="tracks">
+              <div class="track"><h4>Daily scenarios</h4><ul><li>Slow runners built for indexes, futures, commodities and FX. All tested on synthetic data only; real-data runners refuse until a pre-registration is frozen.</li><li>22:57–23:04: H6 frozen and its validation look run five times with identical output.</li></ul></div>
+              <div class="track"><h4>Qwen</h4><ul><li>12:45: news scorer written. 17:03: Benzinga headline set built for fine-tuning. 18:50: fine-tune smoke test.</li></ul></div>
+            </div>
+            <p class="expect"><b>By midnight:</b> H5 (Qwen as headline reader) frozen on paper; scoring and fine-tuning ready to run.</p>
+          </div>
+          <div class="phase">
+            <div class="phase-head"><h3>Qwen fine-tunes finish</h3></div>
+            <div class="tracks">
+              <div class="track"><h4>Training</h4><ul><li><code>d1</code> (375 steps, about 2.1 hours) saved 01:55. <code>d2</code> (2 epochs, 1,000 steps) saved 08:03.</li><li>Both learned the public task and neither added signal on Benzinga headlines.</li></ul></div>
+            </div>
+            <p class="expect"><b>By midday:</b> fine-tuning Qwen on headline direction was a dead end at this data size.</p>
+          </div>
+          <div class="phase">
+            <div class="phase-head"><h3>The H5 gate runs</h3></div>
+            <div class="tracks">
+              <div class="track"><h4>Scoring</h4><ul><li>02:24: scoring finished. 87,432 stories across 528 tickers, 0 invalid answers.</li></ul></div>
+              <div class="track"><h4>Gate</h4><ul><li>09:04: V1 (S&amp;P 500) FAIL.</li><li>09:45: V3 (mid-cap, 20 bps) PASS, narrowly.</li></ul></div>
+            </div>
+            <p class="expect"><b>By midday:</b> one lead, two of three variant slots spent, and the next gate not yet run.</p>
+          </div>
+          <div class="phase later">
+            <div class="phase-head"><h3>Open work</h3></div>
+            <div class="tracks">
+              <div class="track"><h4>Next</h4><ul><li>No run is logged after that in the files read.</li><li>Pending: V3 validation book, V2 robustness, one test look, then a 120-day forward test.</li></ul></div>
+            </div>
+            <p class="expect"><b>Open:</b> nothing has been tested on a test window yet.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="status" aria-labelledby="h-status">
+        <header><p class="kicker">Ledger</p><h2 id="h-status">Every attempt, and how it ended</h2></header>
+        <div class="prose"><p>Red means the attempt failed on evidence. Blue means retired, untested or inconclusive. Green means it worked or is a live lead. Intervals are 95% day-block bootstrap unless stated.</p></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Attempt</th><th>Status</th><th>What happened</th></tr></thead>
+            <tbody>
+              <tr><td>1. Earlier hosted model as the entry gate</td><td><span class="pill mid">Retired</span></td><td>All five Phase 6 pass conditions failed or were inconclusive. Deflated Sharpe 0.0. Removed from code and docs the same day.</td></tr>
+              <tr><td>2. Laya <code>typed-decisions</code> reading 17 snapshot numbers</td><td><span class="pill high">Failed</span></td><td>Brier skill below zero on all four questions (-0.403, -1.146, -0.236, -1.066 on validation); calibration error 0.165–0.484. Its answers sat near 25% when the truth was 55%.</td></tr>
+              <tr><td>3. Laya fine-tunes <code>ft1</code>, <code>ft2a/b/c</code></td><td><span class="pill high">Failed</span></td><td>Calibrated but no skill. <code>ft2a</code> collapsed to the class prior; 36 times more rows (<code>ft2c</code>) removed the collapse and plateaued at <code>ft1</code>'s level. Regime AUC 0.627–0.685 against the logistic's 0.925.</td></tr>
+              <tr><td>4. Laya as a veto in the strategy "schools"</td><td><span class="pill mid">Inconclusive</span></td><td>Momentum under a Laya veto went from -0.31 bps/day on train to +0.46 on validation (interval [-6.77, +12.28], 99 trades). A sign flip is what a gate fitted on a 0.02-wide answer band looks like.</td></tr>
+              <tr><td>5. H2: Laya gate to step aside on disorderly days</td><td><span class="pill high">Failed</span></td><td>-1.73 bps/day against buy-and-hold, interval [-5.5, +2.17]. Flagged days did better than kept days (+2.78 against +2.20 bps), which tripped H2's own kill rule.</td></tr>
+              <tr><td>6. Plain ridge logistic on the same numbers</td><td><span class="pill low">Worked</span></td><td>Regime AUC 0.925, liquidity 0.851. The edge is one feature, <code>vol_vs_typical</code>: volatility clustering, which says nothing about direction. Used as the numeric judge.</td></tr>
+              <tr><td>7. H2-L: the logistic gate as an overlay</td><td><span class="pill high">Failed</span></td><td>-4.31 bps/day against buy-and-hold, interval [-7.63, -0.95]. Flagged days rose +13.37 bps against -0.42 on kept days, so stepping aside gave up return.</td></tr>
+              <tr><td>8. Laya tie-breaker (<code>laya-tb</code>)</td><td><span class="pill high">Retired</span></td><td>Better calibrated (error 0.31 to 0.04) but worse at ranking inside the tie band: AUC 0.35 and 0.42 against the logistic's 0.78 and 0.73. Replay cost 0.76 bps/trade against the gate alone.</td></tr>
+              <tr><td>9. Stacking Laya answers beside the logistic; boosted trees</td><td><span class="pill high">Failed</span></td><td>Adding <code>ft1</code>, <code>ft2c</code> or <code>laya-tb</code> lowered validation AUC (disorderly -0.020 to -0.030, liquidity -0.054 to -0.068). Trees and interactions did not beat the ridge. The 12 snapshot numbers hold nothing more.</td></tr>
+              <tr><td>10. New data kinds for the logistic: context and headline counts</td><td><span class="pill high">Failed</span></td><td><code>context</code>: AUC 0.926 to 0.907, interval [-0.052, +0.008]. <code>news</code> (40,273 headlines): 0.840 to 0.852, interval [-0.012, +0.038].</td></tr>
+              <tr><td>11. Stocks and FX Laya checkpoints</td><td><span class="pill high">Failed</span></td><td>Stocks: 2,018 validation moments, calibration error 0.02–0.06, Brier skill -0.008 to +0.021. FX: 189 signals, Brier skill -0.031 to +0.007. Calibrated priors with no measured edge.</td></tr>
+              <tr><td>12. Laya event reader and auditor</td><td><span class="pill mid">Untested</span></td><td>Event reader is off; its pre-registration (H3) is still a draft and only forward days count. The auditor is usable now because nothing rides on it, and its two answers are uncalibrated.</td></tr>
+              <tr><td>13. Qwen3 fine-tunes <code>d1</code>, <code>d2</code> on Benzinga headlines</td><td><span class="pill high">Failed</span></td><td>Public test accuracy rose 0.708 to 0.878, but Benzinga test AUC went 0.493 to 0.497. Difference +0.004, interval [-0.017, +0.023]. <code>d2</code> validation AUC 0.5140 against base 0.5166.</td></tr>
+              <tr><td>14. H5 V1: Qwen3 fields, S&amp;P 500, 5-day label</td><td><span class="pill high">Failed</span></td><td>AUC gain +0.0014, interval [-0.0054, +0.0073], 51,235 validation rows over 102 days. The 3-day (+0.0026) and 1-day (+0.0083) gains also include zero.</td></tr>
+              <tr><td>15. H5 V3: same fields, mid-cap tercile, 20 bps</td><td><span class="pill low">Lead</span></td><td>5-day gain +0.0118, interval [+0.0001, +0.0228], 17,082 rows. The 3-day and 1-day intervals include zero. It passes the gate by a hair and has not faced the book test.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="note"><b>Non-model baselines, for scale.</b> The stocks win-score logistic (F6) was +1.31 bps gross and -2.69 net on 2016–2022 train, in-sample. Volume-spike reversal on S&amp;P 500 names ran opposite to the expected sign (-12.0 bps at one day, before cost). H6 volatility sizing gave a Sharpe difference of +0.05 [-0.24, +0.34] on validation.</div>
+      </section>
+
+      <section id="scorecard" aria-labelledby="h-score">
+        <header><p class="kicker">Measurement</p><h2 id="h-score">The numbers behind the verdicts</h2></header>
+        <div class="prose"><p>Validation AUC by question, 262 moments on SPY and QQQ. 0.5 is a coin flip. The two questions that carry signal are about volatility and volume, not direction.</p></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Question</th><th>Ridge logistic</th><th>typed-decisions</th><th>ft1</th><th>ft2c</th></tr></thead>
+            <tbody>
+              <tr><td>regime (disorderly)</td><td class="n">0.925</td><td class="n">0.631</td><td class="n">0.685</td><td class="n">0.627</td></tr>
+              <tr><td>liquidity_stressed</td><td class="n">0.851</td><td class="n">0.564</td><td class="n">0.702</td><td class="n">0.657</td></tr>
+              <tr><td>follow_through</td><td class="n">0.466</td><td class="n">0.523</td><td class="n">0.519</td><td class="n">0.533</td></tr>
+              <tr><td>move_beats_cost</td><td class="n">0.639</td><td class="n">0.527</td><td class="n">0.553</td><td class="n">0.574</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="prose"><p>The intraday rule, stress cost 4 bps round trip. Buy-and-hold SPY made +2.24 bps/day on train and +4.50 on validation.</p></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>System</th><th>Window</th><th>Trades</th><th>Gross bps</th><th>Net stress bps</th></tr></thead>
+            <tbody>
+              <tr><td>Rule alone</td><td>train</td><td class="n">562</td><td class="n">-0.04</td><td class="n">-4.04</td></tr>
+              <tr><td>Rule alone</td><td>validation</td><td class="n">262</td><td class="n">+0.54</td><td class="n">-3.46</td></tr>
+              <tr><td>Rule plus earlier-model gate</td><td>train</td><td class="n">262</td><td class="n">-1.13</td><td class="n">-5.13</td></tr>
+              <tr><td>Rule plus earlier-model gate</td><td>validation</td><td class="n">117</td><td class="n">+0.84</td><td class="n">-3.16</td></tr>
+              <tr><td>Rule plus numeric gate</td><td>validation</td><td class="n">n/a</td><td class="n">n/a</td><td class="n">-2.50</td></tr>
+              <tr><td>Numeric gate plus Laya tie-break</td><td>validation</td><td class="n">n/a</td><td class="n">n/a</td><td class="n">-3.27</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="prose"><p>The Qwen headline reader on a 5-day excess-return label, validation.</p></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Variant</th><th>Base AUC</th><th>With Qwen</th><th>Gain</th><th>95% interval</th><th>Verdict</th></tr></thead>
+            <tbody>
+              <tr><td>V1, S&amp;P 500</td><td class="n">0.4844</td><td class="n">0.4857</td><td class="n">+0.0014</td><td class="n">[-0.0054, +0.0073]</td><td>FAIL</td></tr>
+              <tr><td>V3, mid-cap</td><td class="n">0.4700</td><td class="n">0.4818</td><td class="n">+0.0118</td><td class="n">[+0.0001, +0.0228]</td><td>PASS</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="note"><b>Read the base AUCs.</b> The price-only model sits below 0.5 on validation in both rows, so "with Qwen" is still near a coin flip. The gain is small in a model that has little to add to.</div>
+      </section>
+
+      <section id="verdicts" aria-labelledby="h-verd">
+        <header><p class="kicker">Disposition</p><h2 id="h-verd">What is open, what is closed, what waits</h2></header>
+        <div class="prose"><p>Each "later" carries the trigger that starts it.</p></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Direction</th><th>Verdict</th><th>Why, and the trigger</th></tr></thead>
+            <tbody>
+              <tr><td>H5 V3: Qwen fields, mid-cap book test</td><td><span class="verdict now">Now</span></td><td>The only live lead. Next gate: top-decile book net of 20 bps must beat SPY and the equal-weight universe.</td></tr>
+              <tr><td>Laya event reader (H3)</td><td><span class="verdict later">Later</span></td><td>Needs a frozen H3 and forward days. Trigger: you freeze the draft.</td></tr>
+              <tr><td>Laya auditor</td><td><span class="verdict opt">Optional</span></td><td>No lookahead risk and no money rides on it. It guards against bad prints (407 masked on FX).</td></tr>
+              <tr><td>H6 vol-sized SPY, test window</td><td><span class="verdict later">Later</span></td><td>No model involved. Validation does not exclude zero, and 407 test days will probably be inconclusive. Trigger: you decide a probable "inconclusive" is worth the one look.</td></tr>
+              <tr><td>Futures, commodities and FX daily scenarios</td><td><span class="verdict later">Later</span></td><td>Built, unrun, drafts unfrozen. The Qwen-dependent ones wait on the H5 book result; the numeric ones can start once you freeze.</td></tr>
+              <tr><td>Real-fill measurement on SPY/QQQ</td><td><span class="verdict opt">Optional</span></td><td>Every cost claim is assumed (2–4 bps) while the quoted spread is 0.25–0.32 bps. A few weeks of small paper fills would settle it.</td></tr>
+              <tr><td>Laya reading snapshot numbers; Laya tie-break</td><td><span class="verdict never">Closed</span></td><td>The logistic beats every checkpoint, and stacking made it worse.</td></tr>
+              <tr><td>SPY/QQQ 1-minute momentum and its variants</td><td><span class="verdict never">Closed</span></td><td>About 96 variants, none positive net. Do not re-test.</td></tr>
+              <tr><td>Qwen fine-tuning on headline direction; H5 V1 on the S&amp;P 500</td><td><span class="verdict never">Closed</span></td><td>No gain on Benzinga test; V1's interval includes zero at every horizon.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="rules" aria-labelledby="h-rules">
+        <header><p class="kicker">Judgment</p><h2 id="h-rules">Rules and risks</h2></header>
+        <div class="prose"><p>The kill rules below come from the pre-registrations. Read them before changing a threshold.</p></div>
+        <div class="rules">
+          <div class="rule"><p><b class="if">If</b>the V3 validation book is not above zero after 20 bps, or does not beat the equal-weight universe.</p><p><b class="then">Then</b>H5 ends as "no text edge found". The next idea is a new pre-registration.</p></div>
+          <div class="rule"><p><b class="if">If</b>any scored day falls on or before a model's cutoff.</p><p><b class="then">Then</b>the run is void.</p></div>
+          <div class="rule"><p><b class="if">If</b>the book is positive gross but not net.</p><p><b class="then">Then</b>lengthen the hold once; never lower the cost.</p></div>
+          <div class="rule"><p><b class="if">If</b>the forward test is below -200 bps cumulative net excess after day 60.</p><p><b class="then">Then</b>abandon it early. Do not declare a win early either.</p></div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Risk</th><th>Likelihood</th><th>Impact</th><th>Mitigation</th></tr></thead>
+            <tbody>
+              <tr><td>The V3 pass is luck. Its lower bound is +0.0001, and two of three Qwen variant slots are spent.</td><td><span class="pill high">High</span></td><td><span class="pill high">High</span></td><td>Run the book test and the Qwen2.5 check before believing it. Do not add variants.</td></tr>
+              <tr><td>Multiple testing. About 96 SPY/QQQ variants against a budget of 5.</td><td><span class="pill high">High</span></td><td><span class="pill mid">Medium</span></td><td>Closed. The deflated Sharpe was 0.0 to 0.07 against a 0.95 bar.</td></tr>
+              <tr><td>Freeze provenance. H5 and H6 name a placeholder sha. The first screen ran at 05:44 and H1 froze at 06:27.</td><td><span class="pill mid">Medium</span></td><td><span class="pill mid">Medium</span></td><td>Commit the freeze files and record the real sha.</td></tr>
+              <tr><td>H6's written rule says stop only if the stressed Sharpe difference is at or below zero; the commit note stops on the lower bound.</td><td><span class="pill mid">Medium</span></td><td><span class="pill low">Low</span></td><td>Decide which reading binds before any test look.</td></tr>
+              <tr><td>Thin evidence. Qwen has 14 months of honest history, and the test window is a fraction of it.</td><td><span class="pill high">High</span></td><td><span class="pill mid">Medium</span></td><td>Expect "inconclusive" and rely on the forward test.</td></tr>
+              <tr><td>Data and costs. IEX carries 2–4% of volume; costs were assumed; the S&amp;P 500 membership list is unaudited.</td><td><span class="pill mid">Medium</span></td><td><span class="pill mid">Medium</span></td><td>Measure fills; audit the membership file.</td></tr>
+              <tr><td>Uncommitted work. <code>datagate_runs.jsonl</code> and <code>h5_run.py</code> are untracked.</td><td><span class="pill high">High</span></td><td><span class="pill mid">Medium</span></td><td>Commit them. This holds the only gate evidence.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="note stop"><b>No edge found is not no edge exists.</b> The indexes test window (146 days) was never opened, intervals are wide, and costs were assumed. The evidence supports "nothing worked here", not "nothing can".</div>
+      </section>
+
+      <section id="recommendation" aria-labelledby="h-rec">
+        <header><p class="kicker">Answer</p><h2 id="h-rec">What should happen next?</h2></header>
+        <div class="answer">
+          <p class="verdict-line">Run the one remaining gate on the mid-cap Qwen lead, and treat every other local-model role as closed until forward days exist.</p>
+          <p>Local models have not beaten a regression on numbers anywhere, so the open question is text on single stocks over days. If the V3 book test fails, H5 ends and the project's honest result is that no local model added tradable information. If it passes, the next evidence is the Qwen2.5 check, one test look, and 120 forward days.</p>
+        </div>
+      </section>
+
+      <section id="sources" aria-labelledby="h-src">
+        <header><p class="kicker">References</p><h2 id="h-src">Sources</h2></header>
+        <div class="prose"><p>Everything below was read from the repo; no backtest was re-run. The Qwen gate figures were read straight from <code>datagate_runs.jsonl</code>, and the story count came from the score file. Indexes figures, the Laya AUC table and the H1–H2 results are carried over from <code>Indexes_Conclusion.md</code>, and the Daily Phase 1 and win-score figures from their own reports. Times are from run logs and file dates.</p></div>
+        <div class="sources">
+          <section><h4>Conclusions and plans</h4><ul>
+            <li><a>indexes/Reports/Indexes_Conclusion.md</a></li>
+            <li><a>docs/LAYA_ROLES.md</a></li>
+            <li><a>docs/PROFIT_SCENARIOS_OTHER_SYSTEMS.md</a></li>
+            <li><a>README.md</a></li>
+            <li><a>Reports/Laya Crash Course and Status.html</a></li>
+            <li><a>stocks/Reports/Automation_and_Laya.md</a></li>
+          </ul></section>
+          <section><h4>Pre-registrations</h4><ul>
+            <li><a>stocks/PREREGISTRATION_H5.md</a></li>
+            <li><a>stocks/PREREGISTRATION_H4_DRAFT.md</a></li>
+            <li><a>indexes/PREREGISTRATION_H6.md</a></li>
+          </ul></section>
+          <section><h4>Results and run logs</h4><ul>
+            <li><a>stocks/datagate_runs.jsonl</a></li>
+            <li><a>indexes/daily_runs.jsonl</a></li>
+            <li><a>stocks/Reports/QwenFT.md</a>, <a>stocks/qwen_ft/d2_train.out</a></li>
+            <li><a>stocks/Reports/Daily_Phase1.md</a>, <a>WinScore_train.md</a>, <a>StrategyArena_val.md</a></li>
+            <li><a>fx/Reports/Calibration_FX.md</a>, <a>stocks/Reports/Calibration_STOCKS.md</a></li>
+          </ul></section>
+          <section><h4>History</h4><ul>
+            <li>Git log of the repo, 21 commits (<code>git log --reverse</code>)</li>
+            <li>File modification dates for Qwen scores, adapters and reports</li>
+          </ul></section>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <footer class="end">
+    <span>D.A.T.A. · Digital Analytics &amp; Technology Architecture LLC · Mesa, Arizona</span>
+    <span>Pointing local AI at financial data: project roadmap</span>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var KEY = 'data-report:' + document.title;
+  function get(k) { try { return JSON.parse(localStorage.getItem(k) || '[]'); } catch (e) { return []; } }
+  function put(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* storage off: ticks last for this visit */ } }
+  function all(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+  function tid(box) { var l = box.closest('.task'); var t = l.querySelector('b') || l.querySelector('span'); return t.textContent.trim().slice(0, 80); }
+  function fmt(x) { return (Math.round(x * 10) / 10).toString(); }
+
+  // tick persistence: boxes, storage key, callback after every change
+  function persist(boxes, key, after) {
+    var done = get(key);
+    function save() { put(key, boxes.filter(function (b) { return b.checked; }).map(tid)); if (after) after(); }
+    boxes.forEach(function (b) { b.checked = done.indexOf(tid(b)) !== -1; b.addEventListener('change', save); });
+    if (after) after();
+    return function clear() { boxes.forEach(function (b) { b.checked = false; }); save(); };
+  }
+
+  // phase cards: ticks + "n of m done"
+  all('#phases .pcard').forEach(function (card, i) {
+    var boxes = all('input[type="checkbox"]', card), p = card.querySelector('[data-prog]');
+    persist(boxes, KEY + ':phase:' + (card.id || i), function () {
+      var n = boxes.filter(function (b) { return b.checked; }).length;
+      if (p) p.textContent = n + ' of ' + boxes.length + ' done';
+    });
+  });
+
+  // workstream filter
+  var chips = all('.fchip'), active = [];
+  function apply() {
+    all('.wsg').forEach(function (g) { g.hidden = active.length > 0 && active.indexOf(g.getAttribute('data-ws')) === -1; });
+    chips.forEach(function (c) {
+      var f = c.getAttribute('data-f');
+      c.setAttribute('aria-pressed', f === 'all' ? String(active.length === 0) : String(active.indexOf(f) !== -1));
+    });
+  }
+  chips.forEach(function (c) {
+    c.addEventListener('click', function () {
+      var f = c.getAttribute('data-f');
+      if (f === 'all') active = [];
+      else { var i = active.indexOf(f); if (i === -1) active.push(f); else active.splice(i, 1); }
+      apply();
+    });
+  });
+
+  // weekly checklist: resets each Monday, or on demand
+  var wk = document.getElementById('weekly');
+  if (wk) {
+    var d = new Date(); d.setDate(d.getDate() - ((d.getDay() + 6) % 7));
+    var monday = d.toISOString().slice(0, 10), wboxes = all('input[type="checkbox"]', wk);
+    var lab = document.getElementById('week-label'); if (lab) lab.textContent = 'Week of ' + d.toLocaleDateString(undefined, { month: 'long', day: 'numeric' });
+    var clear = persist(wboxes, KEY + ':week:' + monday, function () {
+      var el = document.getElementById('week-progress');
+      if (el) el.textContent = wboxes.filter(function (b) { return b.checked; }).length + ' of ' + wboxes.length + ' done';
+    });
+    var rb = document.getElementById('reset-week'); if (rb) rb.addEventListener('click', clear);
+  }
+
+  // mix chart: data-v is a percentage
+  all('#mix-chart .seg').forEach(function (s) { var v = +s.getAttribute('data-v'); s.style.width = v + '%'; s.textContent = v + '%'; });
+
+  // capacity chart: data-h per segment, slider sets the limit and the full width
+  var slider = document.getElementById('cap-hours');
+  function cap() {
+    var v = +slider.value, mx = +slider.max;
+    document.getElementById('cap-out').textContent = v;
+    all('#cap-chart .sb-row').forEach(function (r) {
+      var tot = 0;
+      all('.seg', r).forEach(function (s) { var h = +s.getAttribute('data-h'); tot += h; s.style.width = (h / mx * 100) + '%'; s.textContent = fmt(h); });
+      r.querySelector('.cap-line').style.left = (v / mx * 100) + '%';
+      var n = r.querySelector('.sb-note'), diff = tot - v;
+      n.textContent = fmt(tot) + ' · ' + (diff > 0 ? fmt(diff) + ' over' : fmt(-diff) + ' spare');
+      n.className = 'sb-note' + (diff > 0 ? ' over' : '');
+    });
+  }
+  if (slider) { slider.addEventListener('input', cap); cap(); }
+
+  // calculator: work back from the goal through four conversion rates
+  var cin = ['goal', 'r1', 'r2', 'r3', 'r4'];
+  function pct(k) { return +document.getElementById('c-' + k).value / 100; }
+  function calc() {
+    if (!document.getElementById('c-goal')) return;
+    var g = +document.getElementById('c-goal').value;
+    document.getElementById('c-goal-o').textContent = g;
+    ['r1', 'r2', 'r3', 'r4'].forEach(function (k) { document.getElementById('c-' + k + '-o').textContent = Math.round(pct(k) * 100) + '%'; });
+    var s4 = g / pct('r4'), s3 = s4 / pct('r3'), s2 = s3 / pct('r2'), s1 = s2 / pct('r1'), w = s1 / 4.33;
+    document.getElementById('c-s4').textContent = fmt(s4);
+    document.getElementById('c-s3').textContent = fmt(s3);
+    document.getElementById('c-s2').textContent = Math.round(s2);
+    document.getElementById('c-s1').textContent = Math.round(s1);
+    document.getElementById('c-wk').textContent = Math.round(w);
+    var v = document.getElementById('calc-verdict'), cp = +v.getAttribute('data-cap');
+    v.textContent = w <= cp
+      ? 'The plan already carries about ' + cp + ' a week, so these rates fit inside it.'
+      : 'The plan already carries about ' + cp + ' a week. At these rates you need ' + Math.round(w - cp) + ' more a week, or a higher rate.';
+  }
+  cin.forEach(function (k) { var el = document.getElementById('c-' + k); if (el) el.addEventListener('input', calc); });
+  calc();
+
+  // expand / collapse all inside a section
+  all('[data-fold]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var open = b.getAttribute('data-open') === '1';
+      all('details', document.querySelector(b.getAttribute('data-fold'))).forEach(function (d) { d.open = open; });
+    });
+  });
+
+  // contents sidebar: highlight the section being read
+  var links = all('.toc a[href^="#"]'), spy = {};
+  links.forEach(function (a) { spy[a.getAttribute('href').slice(1)] = a; });
+  function mark(id) {
+    links.forEach(function (a) { a.classList.toggle('is-active', a === spy[id]); });
+    var a = spy[id], box = a && a.closest('.toc');
+    if (a && box && box.scrollHeight > box.clientHeight) {
+      var t = a.offsetTop - box.clientHeight / 2; box.scrollTop = t > 0 ? t : 0;
+    }
+  }
+  if ('IntersectionObserver' in window) {
+    var seen = {};
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { seen[e.target.id] = e.isIntersecting; });
+      var first = all('main > section').filter(function (s) { return seen[s.id]; })[0];
+      if (first && spy[first.id]) mark(first.id);
+    }, { rootMargin: '-15% 0px -70% 0px' });
+    all('main > section').forEach(function (s) { io.observe(s); });
+  }
+
+  // contents: always open as a sidebar on wide screens, collapsed by default on phones
+  var toc = document.getElementById('toc'), narrow = window.matchMedia('(max-width: 899px)');
+  function syncToc() { if (toc) toc.open = !narrow.matches; }
+  syncToc();
+  if (narrow.addEventListener) narrow.addEventListener('change', syncToc);
+  var lastNarrow = narrow.matches;
+  window.addEventListener('resize', function () { if (narrow.matches !== lastNarrow) { lastNarrow = narrow.matches; syncToc(); } });
+  window.addEventListener('load', syncToc);
+})();
+</script>
+</body>
+</html>

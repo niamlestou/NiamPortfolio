@@ -1,0 +1,14 @@
+# graft's local graph cache — regenerable, not committed (run `graft build`).
+/graft/
+
+# Analytics event store (anonymous, regenerable)
+/data/
+.env
+
+.wrangler/
+node_modules/
+
+# Local-only: audit reports, design-tool caches, search config
+/Report/
+/.impeccable/
+/.ignore

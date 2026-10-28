@@ -1,0 +1,10 @@
+# Robots.txt for Niam LeStourgeon Portfolio
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://niam.pro/sitemap.xml
+
+# Disallow admin/private areas (none currently)
+# Disallow: /private/
+Disallow: /admin/
