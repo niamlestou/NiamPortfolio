@@ -1,0 +1,164 @@
+/* Meadow, "Growing Season": linen, loam and leaf; the site read like a working farm seen from above.
+ * Loaded by themes/theme.js when the Meadow style is active. This file is the site-wide system (tokens, type, components);
+ * meadow-extras.css holds the showpiece layouts and motion, meadow.js adds the markup they need. */
+@font-face { font-family: 'Fraunces'; src: url('/assets/fonts/fraunces.woff2') format('woff2'); font-weight: 300 900; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Fraunces'; src: url('/assets/fonts/fraunces-italic.woff2') format('woff2'); font-weight: 300 900; font-style: italic; font-display: swap; }
+
+html[data-theme="meadow"] {
+  color-scheme: light;
+  --linen: #F4EFE3; --paper: #FBF8F1; --rule: #E2D8C2; --ink: #1F2A1B; --ink-2: #46503F; --dim: #5F604D;
+  --leaf: #3D6A2C; --leaf-deep: #2A4A1E; --sprout: #9CC064; --wheat: #E2B85A; --wheat-deep: #7C5A12; --tomato: #B9492A;
+  --loam: #1E1811; --loam-2: #2C2318; --husk: #D9CBA8;
+  --ease-out: cubic-bezier(.16, 1, .3, 1);
+  --color-bg: var(--linen); --color-bg-elevated: var(--paper); --color-border: var(--rule); --color-border-hover: #B7C79A;
+  --color-text: var(--ink); --color-text-muted: var(--ink-2); --color-text-dim: var(--dim);
+  /* "gold" tokens carry the accent across the shared CSS: leaf green here */
+  --color-gold: var(--leaf); --color-gold-light: var(--leaf-deep); --color-gold-dark: var(--leaf);
+  --color-focus: var(--leaf); --color-focus-ring: rgba(61, 106, 44, .28);
+  --font-heading: 'Fraunces', Georgia, serif;
+  --radius-sm: 6px; --radius-md: 10px; --radius-lg: 18px; --radius-xl: 24px;
+  --shadow-sm: 0 1px 2px rgba(31, 42, 27, .06);
+  --shadow-md: 0 14px 30px -14px rgba(31, 42, 27, .28);
+  --shadow-lg: 0 34px 60px -26px rgba(31, 42, 27, .4);
+  --shadow-glow: 0 10px 24px -10px rgba(61, 106, 44, .55);
+  --header-bg: rgba(244, 239, 227, .8);
+}
+html[data-theme="meadow"], html[data-theme="meadow"] body { background-color: var(--linen); color: var(--ink); }
+html[data-theme="meadow"] { scrollbar-gutter: stable; } /* the opening locks scrolling; keep the layout from shifting when it lets go */
+html[data-theme="meadow"] body {
+  /* paper grain */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .28 0 0 0 0 .15 0 0 0 .06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+html[data-theme="meadow"] body::before, html[data-theme="meadow"] body::after { content: none; }
+html[data-theme="meadow"] :is(.circuit, .circuit-row, #intro) { display: none !important; }
+html[data-theme="meadow"] ::selection { background: var(--wheat); color: var(--loam); }
+
+/* --- type --- */
+html[data-theme="meadow"] :is(h1, h2, h3, h4) { font-family: var(--font-heading); font-optical-sizing: auto; font-weight: 500; letter-spacing: -.02em; color: var(--ink); text-wrap: balance; }
+html[data-theme="meadow"] .gold { color: var(--leaf); }
+html[data-theme="meadow"] :is(.eyebrow, .preview-label, .project-meta, .kicker, .text-label, .section-label) { font-family: var(--font-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--wheat-deep); }
+html[data-theme="meadow"] .hero-title { font-weight: 400; letter-spacing: -.035em; line-height: .95; }
+html[data-theme="meadow"] .hero-title .gold { font-style: italic; font-weight: 300; color: var(--leaf); }
+html[data-theme="meadow"] .hero-lead { font-family: var(--font-heading); font-style: italic; font-weight: 400; color: var(--leaf-deep); }
+
+/* --- header --- */
+html[data-theme="meadow"] .site-header, html[data-theme="meadow"] .site-header.scrolled {
+  background: var(--header-bg); backdrop-filter: blur(14px) saturate(1.2); -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  border-bottom: 1px solid rgba(31, 42, 27, .1);
+}
+/* the wrapped mobile nav is three rows tall: let it scroll away instead of sticking */
+@media (max-width: 720px) { html[data-theme="meadow"] .site-header { position: relative; } }
+html[data-theme="meadow"] .site-brand { display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-heading); font-weight: 600; font-size: 1.3rem; letter-spacing: -.02em; color: var(--ink); }
+html[data-theme="meadow"] .site-brand::before { /* sprout mark */
+  content: ''; width: 26px; height: 26px; flex: none; border-radius: 50%; background: var(--leaf) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 26' fill='none' stroke='%23F4EFE3' stroke-width='1.6' stroke-linecap='round'%3E%3Cpath d='M13 20V11'/%3E%3Cpath d='M13 13c0-3.5-2.6-5.6-6-5.6 0 3.4 2.4 5.6 6 5.6Z' fill='%23F4EFE3'/%3E%3Cpath d='M13 11c0-3 2.3-5 5.5-5 0 3-2.2 5-5.5 5Z' fill='%23E2B85A' stroke='%23E2B85A'/%3E%3C/svg%3E") center / 100% no-repeat;
+  transition: transform .6s var(--ease-out);
+}
+html[data-theme="meadow"] .site-brand:hover::before { transform: rotate(-14deg) scale(1.08); }
+html[data-theme="meadow"] .site-brand:hover { color: var(--leaf); }
+html[data-theme="meadow"] .menu a { position: relative; color: var(--ink-2); font-weight: 500; }
+html[data-theme="meadow"] .menu > li > a::after { content: ''; position: absolute; left: 0; right: 0; bottom: 2px; height: 2px; border-radius: 2px; background: var(--leaf); transform: scaleX(0); transform-origin: left; transition: transform .45s var(--ease-out); }
+html[data-theme="meadow"] .menu > li > a:is(:hover, :focus-visible, [aria-current="page"])::after { transform: scaleX(1); }
+html[data-theme="meadow"] .menu a:is(:hover, :focus-visible, [aria-current="page"]) { color: var(--leaf-deep); }
+html[data-theme="meadow"] .dropdown-menu { background: var(--paper); border: 1px solid var(--rule); border-radius: 14px; box-shadow: var(--shadow-lg); }
+html[data-theme="meadow"] .dropdown-menu a { border-radius: 8px; }
+html[data-theme="meadow"] .dropdown-menu a:hover { background: rgba(61, 106, 44, .08); }
+
+/* --- buttons: pills that fill with wheat from the left --- */
+html[data-theme="meadow"] .btn { border-radius: 999px; font-weight: 600; letter-spacing: -.005em; transition: transform .4s var(--ease-out), box-shadow .4s var(--ease-out), background-size .5s var(--ease-out), color .3s, border-color .3s; }
+html[data-theme="meadow"] .btn--primary {
+  color: var(--paper); border-color: var(--leaf-deep);
+  background: linear-gradient(var(--wheat), var(--wheat)) left / 0 100% no-repeat, var(--leaf-deep);
+}
+html[data-theme="meadow"] .btn--primary:hover { color: var(--loam); background-size: 100% 100%; border-color: var(--wheat); box-shadow: var(--shadow-glow); transform: translateY(-2px); }
+html[data-theme="meadow"] .btn--secondary { color: var(--ink); border: 1.5px solid rgba(31, 42, 27, .35); background: rgba(251, 248, 241, .6); }
+html[data-theme="meadow"] .btn--secondary:hover { color: var(--leaf-deep); border-color: var(--leaf); background: var(--paper); }
+html[data-theme="meadow"] .btn--ghost { color: var(--leaf-deep); }
+html[data-theme="meadow"] .btn--ghost:hover { color: var(--tomato); }
+
+/* --- tags, badges --- */
+html[data-theme="meadow"] .tech-tag { background: var(--paper); border: 1px solid var(--rule); color: var(--ink-2); border-radius: 999px; }
+html[data-theme="meadow"] .tech-tag:hover { background: var(--leaf-deep); border-color: var(--leaf-deep); color: var(--paper); box-shadow: var(--shadow-glow); }
+html[data-theme="meadow"] .badge { background: var(--wheat); border: 0; color: var(--loam); font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+
+/* --- cards: paper with a soft lift and a sunlit spot under the cursor --- */
+html[data-theme="meadow"] :is(.card, .timeline-content, .goal-item, .highlight-item) {
+  background: var(--paper); border: 1px solid var(--rule); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm);
+  transition: transform .5s var(--ease-out), box-shadow .5s var(--ease-out), border-color .3s;
+}
+html[data-theme="meadow"] :is(.card, .goal-item):hover {
+  border-color: #C9D3AE; box-shadow: var(--shadow-md); transform: translateY(-3px);
+  background-image: radial-gradient(420px circle at var(--mx, 50%) var(--my, 0%), rgba(226, 184, 90, .16), transparent 65%);
+  background-color: var(--paper);
+}
+html[data-theme="meadow"] .card--bordered { border-color: rgba(61, 106, 44, .3); }
+html[data-theme="meadow"] .case-link, html[data-theme="meadow"] .project-link { color: var(--leaf-deep); text-decoration: none; background: linear-gradient(var(--wheat), var(--wheat)) left 100% / 100% 2px no-repeat; padding-bottom: 2px; transition: background-size .45s var(--ease-out), color .3s; }
+html[data-theme="meadow"] .case-link:hover, html[data-theme="meadow"] .project-link:hover { color: var(--loam); background-size: 100% 100%; }
+html[data-theme="meadow"] .media-wrapper { border: 1px solid var(--rule); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); background: var(--loam); }
+
+/* --- stats (site-wide): values in the serif, labels small caps --- */
+html[data-theme="meadow"] .stat-value { font-family: var(--font-heading); font-weight: 400; color: var(--leaf-deep); letter-spacing: -.03em; }
+html[data-theme="meadow"] .stat-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); }
+
+/* --- about highlights: set like the yield band, on paper --- */
+html[data-theme="meadow"] .highlight-item, html[data-theme="meadow"] .highlight-item:hover { background: transparent; border: 0; border-left: 1px solid var(--rule); border-radius: 0; box-shadow: none; transform: none; text-align: left; padding: 8px 0 8px 22px; }
+html[data-theme="meadow"] .highlight-value { font-family: var(--font-heading); font-weight: 300; font-size: clamp(3rem, 5vw, 4.5rem); line-height: 1; letter-spacing: -.03em; color: var(--leaf-deep); }
+html[data-theme="meadow"] .highlight-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); }
+
+/* --- timeline: growth rings --- */
+html[data-theme="meadow"] .timeline::before { background: linear-gradient(180deg, var(--leaf), rgba(61, 106, 44, 0)); }
+html[data-theme="meadow"] .timeline-marker { background: var(--paper); border-color: var(--leaf); color: var(--leaf-deep); box-shadow: 0 0 0 6px rgba(156, 192, 100, .18); font-family: var(--font-heading); }
+
+/* --- section titles: left set, a furrow rule that draws in when revealed (motion.js adds .m-done) --- */
+html[data-theme="meadow"] .section-title { font-size: clamp(2rem, 4.4vw, 3.2rem); line-height: 1.02; }
+html[data-theme="meadow"] .section-title::after {
+  width: 120px; height: 14px; margin-top: 14px; border-radius: 0; transform-origin: left;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 14' fill='none'%3E%3Cpath d='M1 7c12-6 24 6 36 0s24 6 36 0 24 6 36 0' stroke='%233D6A2C' stroke-width='1.6' stroke-linecap='round'/%3E%3Cpath d='M112 7c0-3.6 2.7-6 6.5-6 0 3.6-2.7 6-6.5 6Z' fill='%23E2B85A'/%3E%3C/svg%3E") left / contain no-repeat;
+}
+html.js[data-theme="meadow"]:not(.m-skip) .section-title::after { transform: scaleX(0); transition: transform 1.2s var(--ease-out) .2s; }
+html.js[data-theme="meadow"] .section-title.m-done::after { transform: scaleX(1); }
+
+/* --- hero preview: a field instrument read-out --- */
+html[data-theme="meadow"] .card.preview { background: rgba(251, 248, 241, .82); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(31, 42, 27, .14); box-shadow: var(--shadow-lg); }
+html[data-theme="meadow"] .card.preview:hover { background-color: rgba(251, 248, 241, .92); box-shadow: 0 40px 70px -30px rgba(31, 42, 27, .5); }
+html[data-theme="meadow"] .pipe li::before { background: var(--paper); border: 1.5px solid var(--leaf); }
+html[data-theme="meadow"] .pipe li:not(:last-child)::after { background: rgba(61, 106, 44, .3); }
+html[data-theme="meadow"] .pipe::after { background: var(--wheat); box-shadow: 0 0 0 4px rgba(226, 184, 90, .3); }
+html[data-theme="meadow"] .pipe li:last-child::before { background: var(--wheat); border-color: var(--wheat-deep); animation-name: m-flare; }
+@keyframes m-flare { 0% { box-shadow: 0 0 0 7px rgba(226, 184, 90, .35); } 15%, 80% { box-shadow: 0 0 0 0 transparent; } 96%, 100% { box-shadow: 0 0 0 7px rgba(226, 184, 90, .35); } }
+html[data-theme="meadow"] .pipe b { font-family: var(--font-heading); font-weight: 600; font-size: 1.05rem; }
+/* motion.js tweens these to a hardcoded gold; pin them in the light theme */
+html[data-theme="meadow"] .pipe li b { color: var(--ink) !important; }
+
+/* --- footer: dark loam under a wheat line (wheat is added by meadow.js) --- */
+html[data-theme="meadow"] .site-footer { position: relative; margin-top: 220px; padding: var(--space-7) 0 var(--space-6); background: var(--loam); border-top: 0; color: var(--husk); }
+html[data-theme="meadow"] .site-footer :is(.footer-copyright, .style-note, .style-switch-label) { color: #CDBF9C; }
+html[data-theme="meadow"] .site-footer .gold { color: var(--wheat); font-style: italic; font-family: var(--font-heading); }
+html[data-theme="meadow"] .site-footer .footer-link { color: var(--husk); }
+html[data-theme="meadow"] .site-footer .footer-link:hover { color: var(--wheat); }
+html[data-theme="meadow"] .site-footer .style-note { display: none; } /* placeholder copy in index.html */
+html[data-theme="meadow"] .site-footer .style-switch { padding-bottom: var(--space-5); margin-bottom: var(--space-5); border-bottom-color: rgba(217, 203, 168, .18); }
+html[data-theme="meadow"] .site-footer .style-switch button { color: var(--husk); border-color: rgba(217, 203, 168, .35); }
+html[data-theme="meadow"] .site-footer .style-switch button:hover { border-color: var(--wheat); color: #fff; }
+html[data-theme="meadow"] .site-footer .style-switch button[aria-pressed="true"] { background: var(--wheat); border-color: var(--wheat); color: var(--loam); }
+
+/* ai-usage-and-training: page defines its own dark palette */
+html[data-theme="meadow"] {
+  --bg: var(--linen); --surface: var(--paper); --ink: #1F2A1B; --ink2: #46503F; --muted: #5F604D;
+  --grid: var(--rule); --axis: #8A8F74; --border: var(--rule); --hover: rgba(61, 106, 44, .08);
+  --accent: var(--leaf); --on-accent: var(--paper); --warn-bg: #F1E3BE; --warn-ink: #5A4210;
+  --h0: #EDE6D3; --h1: #D3DDB6; --h2: #A9C27F; --h3: #6E9A4C; --h4: #2A4A1E;
+}
+html[data-theme="meadow"] :is(.chart, .skill) { background: var(--paper); }
+html[data-theme="meadow"] .chart svg rect { stroke: var(--paper); }
+html[data-theme="meadow"] dialog::backdrop { background: rgba(30, 24, 17, .4); }
+
+/* data-analytics: embedded widget carries its own dark palette */
+html[data-theme="meadow"] .ms { --bg: var(--paper); --field: var(--linen); --line: var(--rule); --text: #1F2A1B; --muted: #5F604D; --accent: var(--leaf); --sel: #DCE5CB; }
+html[data-theme="meadow"] .ms-badge { background: #DCE5CB; color: var(--leaf-deep); }
+html[data-theme="meadow"] .ms-tip { background: var(--paper); }
+html[data-theme="meadow"] .ms-dot.on { stroke: #1F2A1B; }
+html[data-theme="meadow"] .gp-btn { background: rgba(244, 239, 227, .88); color: #1F2A1B; }
+
+/* code snippets (case studies): the dark-theme colours are too pale on paper */
+html[data-theme="meadow"] .code .s { color: #2F6B3A; }
+html[data-theme="meadow"] .code .n { color: #9A5A22; }

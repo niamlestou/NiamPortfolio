@@ -9,6 +9,12 @@
   const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; };
   const token = { get: () => { try { return sessionStorage.getItem(KEY) || ''; } catch { return ''; } }, set: (v) => { try { v ? sessionStorage.setItem(KEY, v) : sessionStorage.removeItem(KEY); } catch {} } };
 
+  const THEME_NAMES = { control: 'Compute', meadow: 'Meadow' };
+  const AB_ROWS = [ // [label, key, formatter, which direction is better: 1 higher, -1 lower, 0 neither]
+    ['Sessions', 'sessions', num, 0], ['Visitors', 'visitors', num, 0], ['Pages per visit', 'pagesPerSession', (n) => num(n, 2), 1], ['Avg. visit length', 'avgSessionMs', dur, 1],
+    ['Median visit length', 'medianSessionMs', dur, 1], ['Avg. time per page', 'avgPageMs', dur, 1], ['Avg. scroll depth', 'avgScroll', (n) => (n === null ? '—' : `${n}%`), 1], ['Read to 75%', 'reached75', pct, 1],
+    ['Engaged visits', 'engagedRate', pct, 1], ['Bounce rate', 'bounceRate', pct, -1], ['Clicked something', 'clickRate', pct, 1], ['Viewed a project', 'projectRate', pct, 1],
+    ['Reached contact page', 'contactRate', pct, 1], ['Resume or email click', 'ctaRate', pct, 1]];
   const sessionCols = [['Sessions', (r) => num(r.sessions)], ['Avg. length', (r) => dur(r.avgMs)], ['Engaged', (r) => pct(r.engagedRate)], ['Bounce', (r) => pct(r.bounceRate)]];
   const EVENT_NAMES = { link_click: 'Link', ui_click: 'Button' }; // optional friendly names:  { signup_click: 'Sign-up clicks' }
   const VITAL = { perf_ttfb: 'Time to first byte', perf_fcp: 'First contentful paint', perf_lcp: 'Largest contentful paint', perf_inp: 'Interaction to next paint', perf_cls: 'Layout shift (x1000)' };
@@ -66,6 +72,11 @@
       { type: 'funnel', title: 'Activation path', sub: 'Unique sessions at each step. Configure steps in the collector (funnel option).', wide: true },
       { type: 'kpis', items: (s) => [['Daily active', num(s.stickiness.dau)], ['Monthly active', num(s.stickiness.mau)], ['Stickiness', pct(s.stickiness.ratio), 'Daily ÷ monthly active']] },
       { type: 'cohort', title: 'Weekly retention', sub: 'Share of each first-seen-week cohort that came back, by weeks since first visit.', wide: true },
+    ] },
+    { id: 'ab', title: 'Style test', widgets: [
+      { type: 'kpis', items: (s) => s.variants.map((v) => [`${THEME_NAMES[v.theme] || v.theme} sessions`, num(v.sessions), `${num(v.visitors)} visitors`]) },
+      { type: 'compare', title: 'Side by side', sub: 'Each session counts toward the style its first page was shown in. The better value is highlighted once both styles have 30+ sessions; below that, differences are mostly noise.', wide: true },
+      { type: 'pagecompare', title: 'Average time on each page', sub: 'Active time with the tab in view, per page and style. Delta is Meadow vs Compute.', wide: true },
     ] },
     { id: 'links', title: 'Referral links', widgets: [
       { type: 'generator', title: 'Referral link generator', sub: 'Tag a link so the dashboard can show which placement and campaign sent each visit.', wide: true },
@@ -127,6 +138,28 @@
       const t = el('table', 'cohort'), head = el('tr'); ['Cohort week', 'Visitors', ...rows[0].retained.map((_, i) => `Wk ${i}`)].forEach((h) => head.append(el('th', '', h))); const thead = el('thead'); thead.append(head); t.append(thead);
       const body = el('tbody'); for (const r of rows) { const tr = el('tr'); tr.append(el('th', '', r.week), el('td', '', num(r.size))); r.retained.forEach((v) => { const td = el('td', 'cell', pct(v)); td.style.setProperty('--v', v || 0); tr.append(td); }); body.append(tr); exportRows.push([`Cohort ${r.week}`, `${r.size} visitors; ${r.retained.map(pct).join(' ')}`]); }
       t.append(body); const wrap = el('div', 'table-wrap'); wrap.append(t); p.append(wrap); return p;
+    },
+    compare(w) {
+      const p = panel(w, w.title, w.sub), vs = data.variants.filter((v) => ['control', 'meadow'].includes(v.theme)); if (!vs.some((v) => v.sessions)) { empty(p, 'No sessions yet. Visit the site with ?theme=meadow and without to generate some.'); return p; }
+      const ready = vs.every((v) => v.sessions >= 30), wrap = el('div', 'table-wrap'), t = el('table'), head = el('tr'), thead = el('thead'), body = el('tbody');
+      head.append(el('th', '', 'Metric')); vs.forEach((v) => head.append(el('th', '', THEME_NAMES[v.theme] || v.theme))); thead.append(head); t.append(thead);
+      for (const [label, key, fmt, dir] of AB_ROWS) {
+        const tr = el('tr'), vals = vs.map((v) => v[key]), ok = vals.filter((x) => x !== null), best = dir && ready && ok.length > 1 && new Set(ok).size > 1 ? (dir > 0 ? Math.max(...ok) : Math.min(...ok)) : null;
+        const th = el('th', '', label); th.scope = 'row'; tr.append(th);
+        vals.forEach((x) => tr.append(el('td', x !== null && x === best ? 'win' : '', fmt(x)))); body.append(tr); exportRows.push([`A/B · ${label}`, vs.map((v, i) => `${THEME_NAMES[v.theme] || v.theme}: ${fmt(vals[i])}`).join('; ')]);
+      }
+      t.append(body); wrap.append(t); p.append(wrap); if (!ready) p.append(el('p', 'empty', 'Low sample: a style has fewer than 30 sessions, so no winner is called yet.')); return p;
+    },
+    pagecompare(w) {
+      const p = panel(w, w.title, w.sub), rows = data.variantPages; if (!rows.length) { empty(p); return p; }
+      const wrap = el('div', 'table-wrap'), t = el('table'), head = el('tr'), thead = el('thead'), body = el('tbody');
+      ['Page', 'Compute time', 'Compute views', 'Meadow time', 'Meadow views', 'Delta'].forEach((h) => head.append(el('th', '', h))); thead.append(head); t.append(thead);
+      for (const r of rows) {
+        const a = r.byTheme.control || {}, b = r.byTheme.meadow || {}, d = a.avgTimeMs !== null && b.avgTimeMs !== null && a.avgTimeMs ? (b.avgTimeMs - a.avgTimeMs) / a.avgTimeMs : null, tr = el('tr'), th = el('th', '', r.path); th.scope = 'row';
+        tr.append(th, el('td', '', dur(a.avgTimeMs)), el('td', '', num(a.views)), el('td', '', dur(b.avgTimeMs)), el('td', '', num(b.views)), el('td', d === null ? '' : d > 0 ? 'win' : 'lose', d === null ? '—' : `${d > 0 ? '+' : ''}${Math.round(d * 100)}%`));
+        body.append(tr); exportRows.push([`A/B page · ${r.path}`, `Compute ${dur(a.avgTimeMs)} (${a.views}); Meadow ${dur(b.avgTimeMs)} (${b.views})`]);
+      }
+      t.append(body); wrap.append(t); p.append(wrap); return p;
     },
     generator(w) {
       const p = panel(w, w.title, w.sub), form = el('form', 'gen'), mk = (id, label, hint) => { const l = el('label'); l.append(el('span', '', label)); const i = el('input'); i.id = id; i.required = true; i.maxLength = 60; i.placeholder = hint; i.autocomplete = 'off'; l.append(i); form.append(l); return i; };

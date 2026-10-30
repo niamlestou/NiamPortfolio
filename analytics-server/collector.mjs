@@ -45,7 +45,7 @@ export function summarize(rows, { days = 30, now = Date.now(), funnel = [] } = {
 
   const sessions = new Map();
   for (const v of views) {
-    const s = sessions.get(v.sid) || { sid: v.sid, vid: v.vid, views: 0, landing: v.path, ref: v.ref, utm: v.utm, src: v.src || '', w: v.w, lang: v.lang, t: v.t, durationMs: 0 };
+    const s = sessions.get(v.sid) || { sid: v.sid, vid: v.vid, theme: v.theme || 'control', views: 0, landing: v.path, ref: v.ref, utm: v.utm, src: v.src || '', w: v.w, lang: v.lang, t: v.t, durationMs: 0 };
     s.views++; if (v.ref && !s.ref) s.ref = v.ref; if (v.utm && !s.utm) { s.utm = v.utm; s.src = v.src || ''; } sessions.set(v.sid, s);
   }
   for (const s of sessions.values()) s.durationMs = leaves.get(s.sid) || 0;
@@ -145,8 +145,39 @@ export function summarize(rows, { days = 30, now = Date.now(), funnel = [] } = {
       : new Set(events.filter((e) => e.name === f.event && (!f.eventLabel || e.label === f.eventLabel)).map((e) => e.sid)).size })));
   const errorEvents = events.filter((e) => e.name === 'client_error' || e.name === 'unhandled_rejection');
 
+
+  // ---- A/B: each session belongs to the visual style its first page view was served in ----
+  const themeOf = new Map(all.map((s) => [s.sid, s.theme]));
+  const themes = [...new Set(['control', 'meadow', ...all.map((s) => s.theme)])];
+  const deepest = new Map(); // sid|path -> furthest scroll milestone
+  for (const e of events) if (e.name === 'scroll_depth' && e.value !== null) { const k = `${e.sid}|${e.path}`; deepest.set(k, Math.max(deepest.get(k) || 0, e.value)); }
+  const sidOf = (k) => k.slice(0, k.indexOf('|'));
+  const mean = (a) => (a.length ? a.reduce((x, y) => x + y, 0) / a.length : null);
+  const sidsWhere = (pred) => new Set([...views.filter(pred), ...events.filter(pred)].map((r) => r.sid));
+  const reached = (re) => sidsWhere((r) => r.type === 'pageview' && re.test(r.path));
+  const contactSids = reached(/^\/contact/), projectSids = reached(/^\/(projects|lamp-light|tick-forward|fantasy-football-agent|farmstead-world|data-analytics)/);
+  const clickSids = new Set(clickEvents.map((e) => e.sid));
+  const ctaSids = new Set(events.filter((e) => (e.name === 'ui_click' && e.label === 'resume-download') || (e.name === 'link_click' && /^(mailto|download:)/.test(e.label))).map((e) => e.sid));
+  const variants = themes.map((theme) => {
+    const list = all.filter((s) => s.theme === theme), n = list.length, sids = new Set(list.map((s) => s.sid));
+    const times = [...pageTime].filter(([k, ms]) => sids.has(sidOf(k)) && ms > 0).map(([, ms]) => ms);
+    const scrolls = [...deepest].filter(([k]) => sids.has(sidOf(k))).map(([, v]) => v);
+    const rate = (set) => (n ? list.filter((s) => set.has(s.sid)).length / n : null);
+    return { theme, sessions: n, visitors: new Set(list.map((s) => s.vid)).size, pagesPerSession: n ? list.reduce((a, s) => a + s.views, 0) / n : null,
+      avgSessionMs: n ? Math.round(mean(list.map((s) => s.durationMs))) : null, medianSessionMs: percentile(list.map((s) => s.durationMs), 0.5),
+      avgPageMs: times.length ? Math.round(mean(times)) : null, avgScroll: scrolls.length ? Math.round(mean(scrolls)) : null,
+      reached75: scrolls.length ? scrolls.filter((x) => x >= 75).length / scrolls.length : null,
+      engagedRate: pct(list.filter(isEngaged).length, n), bounceRate: pct(list.filter((s) => s.views === 1 && !isEngaged(s)).length, n),
+      clickRate: rate(clickSids), projectRate: rate(projectSids), contactRate: rate(contactSids), ctaRate: rate(ctaSids) };
+  });
+  const pageTimes = new Map(); // path -> theme -> { ms: [], views }
+  for (const v of views) { const t = themeOf.get(v.sid); if (t) { const g = ((pageTimes.get(v.path) || pageTimes.set(v.path, {}).get(v.path))[t] ||= { ms: [], views: 0 }); g.views++; } }
+  for (const [k, ms] of pageTime) { const i = k.indexOf('|'), t = themeOf.get(k.slice(0, i)), g = pageTimes.get(k.slice(i + 1))?.[t]; if (g && ms > 0) g.ms.push(ms); }
+  const variantPages = [...pageTimes].map(([path, by]) => ({ path, total: Object.values(by).reduce((a, g) => a + g.views, 0),
+    byTheme: Object.fromEntries(themes.map((t) => [t, { views: by[t]?.views || 0, avgTimeMs: by[t]?.ms.length ? Math.round(mean(by[t].ms)) : null }])) })).sort((a, b) => b.total - a.total).slice(0, 20);
+
   return {
-    generatedAt: now, days,
+    generatedAt: now, days, variants, variantPages,
     totals: { pageviews: views.length, visitors: visitors.size, newVisitors, returningVisitors: visitors.size - newVisitors, sessions: all.length,
       pagesPerSession: all.length ? views.length / all.length : null, engagedRate: pct(engaged.length, all.length),
       bounceRate: pct(all.filter((s) => s.views === 1 && !isEngaged(s)).length, all.length),
@@ -187,7 +218,7 @@ export function createAnalytics({ file = 'data/analytics.jsonl', adminToken = pr
   /** Validated by hand: unknown keys dropped, strings capped, ids and event names allowlisted. */
   const clean = (b) => {
     if (!b || typeof b !== 'object' || !ID.test(b.vid || '') || !ID.test(b.sid || '')) return null;
-    const base = { t: Date.now(), type: b.type, vid: b.vid, sid: b.sid };
+    const base = { t: Date.now(), type: b.type, vid: b.vid, sid: b.sid, theme: /^[a-z0-9_-]{1,20}$/i.test(b.theme || '') ? b.theme.toLowerCase() : 'control' };
     if (b.type === 'pageview') return { ...base, path: String(b.path || '/').slice(0, 120), ref: String(b.ref || '').slice(0, 300), utm: String(b.utm || '').slice(0, 80), src: String(b.src || '').slice(0, 40),
       w: Math.max(0, Math.min(1e4, Math.round(+b.w) || 0)), lang: String(b.lang || '').slice(0, 20), loadMs: Number.isFinite(b.loadMs) ? Math.max(0, Math.min(12e4, b.loadMs)) : null };
     if (b.type === 'leave') return { ...base, path: String(b.path || '').slice(0, 120), durationMs: Math.max(0, Math.min(DAY, Math.round(+b.durationMs) || 0)) };

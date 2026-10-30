@@ -9,7 +9,7 @@
     <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
     <meta name="description" content="Lamp Light by Niam LeStourgeon: a personal document reader with audio playback and document signing built into one place.">
     <link rel="canonical" href="https://niam.pro/lamp-light.html">
-    <script>document.documentElement.classList.add("js")</script>
+    <script>document.documentElement.classList.add("js")</script><script src="/themes/theme.js"></script>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-qOhFsq0QMV2REqNwk5hGH5bZE9SkX6gt6yeyKdYPv+U='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; media-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <link rel="preload" href="assets/fonts/bricolage-grotesque.woff2" as="font" type="font/woff2" crossorigin>
@@ -138,6 +138,30 @@
                     play, pause, and follow along with. When you are ready to sign, the signature goes onto
                     the document in the same view. When you are done, the signed copy stays with the
                     document instead of disappearing into a downloads folder.</p>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">In Code</h2>
+                </div>
+                <p>Reading aloud works one sentence at a time, so the position is always known and always saved.</p>
+                <figure class="code-fig">
+                    <figcaption class="code-cap"><span>read-aloud.js</span><em>illustrative sketch of the approach, not the production source</em></figcaption>
+<pre class="code" tabindex="0"><code><span class="c">// Read aloud one sentence at a time, so pause and resume never lose the place</span>
+<span class="k">function</span> <span class="f">readFrom</span>(doc, i = <span class="n">0</span>) {
+  <span class="k">if</span> (i &gt;= doc.sentences.length) <span class="k">return</span>;
+
+  <span class="k">const</span> utterance = <span class="k">new</span> SpeechSynthesisUtterance(doc.sentences[i]);
+  utterance.onstart = () =&gt; highlight(doc, i);     <span class="c">// follow along on the page</span>
+  utterance.onend = () =&gt; {
+    doc.position = i + <span class="n">1</span>;                          <span class="c">// saved with the document</span>
+    readFrom(doc, i + <span class="n">1</span>);
+  };
+  speechSynthesis.speak(utterance);
+}</code></pre>
+                </figure>
             </div>
         </section>
 

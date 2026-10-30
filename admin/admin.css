@@ -115,3 +115,6 @@ th:first-child, td:first-child { text-align: left; } thead th { color: var(--fai
 
 @media (max-width: 640px) { .topbar { flex-wrap: wrap; gap: 8px; } .live-label { display: none; } .analysis-grid { grid-template-columns: 1fr; } .metrics { grid-template-columns: repeat(2, 1fr); } .admin-export { margin-bottom: 8px; } }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+/* Style test */
+td.win { color: var(--tone-2, #7bc47f); font-weight: 700; } td.lose { color: var(--warn); }

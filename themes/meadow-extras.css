@@ -1,0 +1,217 @@
+/* Meadow showpieces: the pivot-sweep opening, the live field hero, the yield band, the seed-tag marquee, the wheat line and the scroll vine.
+ * Markup comes from meadow.js; every moving part stops under prefers-reduced-motion. */
+
+/* ===== opening: a center-pivot arm sweeps once and waters the page into view ===== */
+@property --sweep { syntax: '<angle>'; inherits: true; initial-value: 0deg; }
+html.m-intro[data-theme="meadow"]::after { content: ''; position: fixed; inset: 0; z-index: 9998; background: var(--loam); animation: m-gone .4s ease 4.4s forwards; } /* cover until meadow.js takes over (or gives up) */
+@keyframes m-gone { to { opacity: 0; visibility: hidden; } }
+#m-intro { position: fixed; inset: 0; z-index: 9999; overflow: hidden; cursor: pointer; --sweep: 0deg; animation: m-sweep 1.9s cubic-bezier(.65, 0, .3, 1) 1.35s forwards; }
+@keyframes m-sweep { to { --sweep: 360deg; } }
+#m-intro.out { opacity: 0; pointer-events: none; transition: opacity .5s ease; }
+.mi-cover {
+  position: absolute; inset: 0; background: radial-gradient(circle at 50% 50%, var(--loam-2), var(--loam) 70%);
+  -webkit-mask: conic-gradient(from 0deg, transparent var(--sweep), #000 var(--sweep)); mask: conic-gradient(from 0deg, transparent var(--sweep), #000 var(--sweep));
+}
+.mi-rings { position: absolute; left: 50%; top: 50%; width: min(78vmin, 640px); aspect-ratio: 1; translate: -50% -50%; border-radius: 50%;
+  background: repeating-radial-gradient(circle, rgba(156, 192, 100, .22) 0 1.5px, transparent 1.5px 14px);
+  animation: m-rings 1.3s var(--ease-out) .1s both; }
+@keyframes m-rings { from { opacity: 0; scale: .6; } }
+.mi-arm { position: absolute; left: 50%; top: 50%; width: 150vmax; height: 3px; transform-origin: 0 50%; rotate: calc(var(--sweep) - 90deg); opacity: 0;
+  background: repeating-linear-gradient(90deg, var(--husk) 0 36px, rgba(217, 203, 168, .4) 36px 40px);
+  box-shadow: 0 0 18px 4px rgba(156, 192, 100, .35); animation: m-arm .3s ease 1.25s forwards, m-gone .35s ease 3.2s forwards; }
+@keyframes m-arm { to { opacity: 1; } }
+.mi-arm::before { content: ''; position: absolute; inset: -14px 0; background: repeating-linear-gradient(90deg, rgba(220, 235, 240, .35) 0 2px, transparent 2px 9px); filter: blur(3px); -webkit-mask: linear-gradient(90deg, transparent, #000 10%); mask: linear-gradient(90deg, transparent, #000 10%); }
+.mi-hub { position: absolute; left: 50%; top: 50%; width: 18px; height: 18px; translate: -50% -50%; border-radius: 50%; background: var(--wheat); box-shadow: 0 0 0 6px rgba(226, 184, 90, .25); animation: m-rings .6s var(--ease-out) 1.2s both, m-gone .35s ease 3.2s forwards; }
+.mi-sign { position: absolute; left: 50%; top: 50%; translate: -50% -50%; color: var(--linen); pointer-events: none; }
+.mi-kicker { margin: 0 0 14px; font: 500 11px var(--font-mono); letter-spacing: .3em; text-transform: uppercase; color: var(--wheat); animation: m-up .8s var(--ease-out) .2s both, m-gone .4s ease 1.35s forwards; }
+/* set like the hero title (two lines, indented italic) so the hand-off is a straight scale */
+.mi-name { margin: 0; font: 400 clamp(2.6rem, 7vw, 5rem)/.95 'Fraunces', Georgia, serif; letter-spacing: -.035em; transform-origin: 0 0; animation: m-up 1s var(--ease-out) .35s both; }
+.mi-name i { display: block; padding-left: .35em; font-weight: 300; color: var(--sprout); white-space: nowrap; }
+.mi-name.fly { color: var(--ink); transition: transform .9s cubic-bezier(.7, 0, .2, 1), color .9s ease; }
+.mi-name.fly i { color: var(--leaf); transition: color .9s ease; }
+@keyframes m-up { from { opacity: 0; translate: 0 18px; filter: blur(6px); } }
+/* repeat visits: a short sweep, no name card */
+#m-intro.quick { animation-delay: 0s; animation-duration: .9s; }
+#m-intro.quick .mi-rings { display: none; }
+#m-intro.quick :is(.mi-arm, .mi-hub) { animation-delay: 0s, .75s; }
+/* the hero waits under the opening; the timed fallback shows it if meadow.js never hands off */
+html.m-hold .hero--split .hero-inner { visibility: hidden; animation: m-show 0s 5s forwards; }
+@keyframes m-show { to { visibility: visible; } }
+@media (prefers-reduced-motion: reduce) { #m-intro { display: none; } }
+
+/* ===== ticker under the header ===== */
+.m-ticker { position: relative; z-index: 2; overflow: hidden; background: var(--leaf-deep); color: var(--linen); font: 500 11px/1 var(--font-mono); letter-spacing: .14em; text-transform: uppercase; }
+.m-ticker > div { display: flex; width: max-content; animation: m-marquee 48s linear infinite; }
+.m-ticker:hover > div { animation-play-state: paused; }
+.m-ticker span { padding: 9px 0; white-space: nowrap; }
+.m-ticker span::after { content: '\2733'; margin: 0 22px; color: var(--wheat); }
+
+/* ===== home hero over a live aerial field (canvas from meadow.js) ===== */
+html[data-theme="meadow"] .hero { position: relative; isolation: isolate; overflow: clip; }
+.m-field { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; display: block; transform-origin: 50% 0;
+  transform: perspective(1400px) rotateX(calc(var(--hp, 0) * 38deg)) scale(calc(1 + var(--hp, 0) * .3)); }
+html[data-theme="meadow"] .hero::after { /* scrim: text side stays legible */
+  content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: radial-gradient(ellipse 70% 80% at 50% 45%, rgba(244, 239, 227, .92), rgba(244, 239, 227, .55) 70%, rgba(244, 239, 227, .2)), linear-gradient(transparent 70%, var(--linen));
+}
+html[data-theme="meadow"] .hero--split { min-height: min(100svh - 100px, 860px); display: grid; align-items: center; padding: clamp(64px, 10vh, 120px) 0 clamp(80px, 12vh, 140px); }
+html[data-theme="meadow"] .hero--split::after {
+  background: linear-gradient(90deg, rgba(244, 239, 227, .94) 0, rgba(244, 239, 227, .78) 30%, rgba(244, 239, 227, .2) 60%, rgba(244, 239, 227, 0) 78%), linear-gradient(transparent 78%, var(--linen));
+}
+@media (max-width: 959px) {
+  html[data-theme="meadow"] .hero--split::after { background: linear-gradient(rgba(244, 239, 227, .6), rgba(244, 239, 227, .88) 30%, rgba(244, 239, 227, .95) 70%, var(--linen)); }
+}
+html[data-theme="meadow"] .hero--split .hero-inner > div { translate: 0 calc(var(--hp, 0) * -60px); }
+html[data-theme="meadow"] .hero--split .hero-title { font-size: clamp(3rem, 6.6vw, 6.2rem); margin-bottom: var(--space-4); }
+html[data-theme="meadow"] .hero--split .hero-title .gold { padding-left: .35em; white-space: nowrap; }
+html[data-theme="meadow"] .hero--split .hero-lead { font-size: clamp(1.5rem, 2.6vw, 2.1rem); max-width: 22ch; }
+html[data-theme="meadow"] .hero--split .hero-status::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--sprout); box-shadow: 0 0 0 0 rgba(156, 192, 100, .6); animation: m-ping 2.4s ease-out infinite; }
+@keyframes m-ping { 70%, 100% { box-shadow: 0 0 0 10px rgba(156, 192, 100, 0); } }
+html[data-theme="meadow"] .hero--split .preview { translate: 0 calc(var(--hp, 0) * 50px); }
+@media (min-width: 960px) { html[data-theme="meadow"] .hero--split .preview { translate: 0 calc(3vh + var(--hp, 0) * 50px); rotate: 2deg; } }
+html[data-theme="meadow"] .hero--split .preview-label { display: flex; justify-content: space-between; gap: 8px; }
+.m-scroll { position: absolute; left: 50%; bottom: 26px; translate: -50% 0; display: grid; justify-items: center; gap: 8px; font: 500 10px var(--font-mono); letter-spacing: .3em; text-transform: uppercase; color: var(--dim); opacity: calc(1 - var(--hp, 0) * 4); }
+.m-scroll::after { content: ''; width: 1px; height: 38px; background: linear-gradient(var(--leaf), transparent); animation: m-drip 2s var(--ease-out) infinite; transform-origin: top; }
+@keyframes m-drip { 0% { transform: scaleY(0); } 60% { transform: scaleY(1); opacity: 1; } 100% { transform: scaleY(1); opacity: 0; } }
+/* drone read-out that follows the cursor over the field */
+.m-probe { position: absolute; z-index: -1; left: 0; top: 0; pointer-events: none; opacity: 0; transition: opacity .3s; font: 600 12px/1.5 var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--loam); }
+.m-probe.on { opacity: 1; }
+.m-probe::before { content: ''; position: absolute; left: -32px; top: -32px; width: 64px; height: 64px; border-radius: 50%; border: 1.5px solid var(--loam);
+  background: conic-gradient(from 0deg, transparent 0 84deg, var(--loam) 84deg 96deg, transparent 96deg 174deg, var(--loam) 174deg 186deg, transparent 186deg 264deg, var(--loam) 264deg 276deg, transparent 276deg 354deg, var(--loam) 354deg) content-box;
+  -webkit-mask: radial-gradient(circle, transparent 24px, #000 25px); mask: radial-gradient(circle, transparent 24px, #000 25px); animation: m-spin 6s linear infinite; }
+.m-probe span { position: absolute; left: 42px; top: -13px; white-space: nowrap; padding: 5px 10px; border-radius: 4px; background: rgba(251, 248, 241, .94); box-shadow: inset 0 -2px 0 var(--wheat), 0 6px 16px -8px rgba(30, 24, 17, .4); }
+@keyframes m-spin { to { rotate: 360deg; } }
+
+/* other pages' heroes: a quieter field band */
+html[data-theme="meadow"] .hero:not(.hero--split) { padding-block: clamp(80px, 14vh, 150px); }
+html[data-theme="meadow"] .hero:not(.hero--split) .hero-title { font-size: clamp(2.8rem, 7vw, 5.6rem); }
+html[data-theme="meadow"] .hero:not(.hero--split) .hero-inner::after { content: none; }
+
+/* ===== section kickers ===== */
+.m-kick { display: flex; align-items: center; gap: 14px; margin: 0 0 14px; font: 500 11px var(--font-mono); letter-spacing: .22em; text-transform: uppercase; color: var(--wheat-deep); }
+.m-kick b { font: italic 400 1.6rem/1 var(--font-heading); letter-spacing: 0; color: var(--leaf); }
+.m-kick::after { content: ''; flex: 0 1 80px; height: 1px; background: currentColor; opacity: .4; }
+html[data-theme="meadow"] main > .section .section-header { text-align: left; }
+/* one alignment axis: body copy and tag rows follow the left-set headers */
+html[data-theme="meadow"] main > .section .container > p, html[data-theme="meadow"] :is(.m-farm, .card) .tech-stack { text-align: left; justify-content: flex-start; margin-inline: 0; }
+html[data-theme="meadow"] main > .section .media-wrapper { margin-inline: 0; }
+
+/* Farmstead page: the supply chain from "How It Works", drawn in with the scroll */
+.m-chain { position: relative; display: flex; justify-content: space-between; gap: 10px; margin-top: 36px; --cp: 0; }
+.m-chain::before, .m-chain::after { content: ''; position: absolute; left: 12px; right: 12px; top: 50%; height: 2px; }
+.m-chain::before { background: repeating-linear-gradient(90deg, var(--rule) 0 6px, transparent 6px 11px); }
+.m-chain::after { background: var(--leaf); transform: scaleX(var(--cp)); transform-origin: left; }
+.m-chain span { position: relative; z-index: 1; padding: 9px 16px; border-radius: 999px; background: var(--paper); border: 1px solid var(--rule); font: 500 12px var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--dim); transition: background .5s, color .5s, border-color .5s, scale .6s cubic-bezier(.3, 1.6, .5, 1); }
+.m-chain span.lit { background: var(--leaf-deep); border-color: var(--leaf-deep); color: var(--paper); scale: 1.06; }
+.m-chain span:last-child.lit { background: var(--wheat); border-color: var(--wheat); color: var(--loam); }
+@media (max-width: 760px) { .m-chain { flex-direction: column; align-items: flex-start; } .m-chain::before, .m-chain::after { left: 20px; right: auto; top: 12px; bottom: 12px; width: 2px; height: auto; } .m-chain::after { transform: scaleY(var(--cp)); transform-origin: top; } }
+
+/* ===== season yield: the stats band on dark loam with drifting survey contours ===== */
+html[data-theme="meadow"] main > .section:has(.stats-grid) {
+  position: relative; padding-block: clamp(80px, 12vw, 140px); margin-block: 40px; color: var(--husk); overflow: clip; background: var(--loam);
+}
+html[data-theme="meadow"] main > .section:has(.stats-grid)::before { /* contours drift on their own and slide with the pin */
+  content: ''; position: absolute; inset: -160px 0; pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400' fill='none' stroke='%23E2B85A' stroke-opacity='.11'%3E%3Cpath d='M-20 60c80-30 160 30 240 0s160-40 240 0 120 20 160 0'/%3E%3Cpath d='M-20 110c80-40 170 40 250 0s150-30 230 5 130 15 160-5'/%3E%3Cpath d='M-20 170c90-35 160 35 250 5s150-45 240-5 110 25 150 0'/%3E%3Cpath d='M-20 230c70-25 170 30 240 0s170-40 250 0 110 15 150 0'/%3E%3Cpath d='M-20 290c90-40 160 40 250 0s160-30 230 5 120 20 160 0'/%3E%3Cpath d='M-20 350c80-30 170 35 250 5s150-40 240 0 110 20 150-5'/%3E%3C/svg%3E") 0 0 / 600px 400px;
+  translate: 0 calc(var(--yp, 0) * -120px); animation: m-drift 60s linear infinite;
+}
+html[data-theme="meadow"] main > .section:has(.stats-grid) > .container { position: relative; }
+/* home: the band pins for ~60vh while the figures count up with the scroll (meadow.js sets --yp and each card's --g) */
+html[data-theme="meadow"] main > .section.m-pin > .container { position: sticky; top: calc(var(--header-height, 72px) + 5vh); }
+html[data-theme="meadow"] main > .section.m-pin::after { content: ''; display: block; height: 60vh; } /* in-flow room for the pin: sticky only travels inside the content box */
+@keyframes m-drift { to { background-position: 600px 400px; } }
+html[data-theme="meadow"] main > .section:has(.stats-grid) :is(.section-title, .m-kick b) { color: var(--linen); }
+html[data-theme="meadow"] main > .section:has(.stats-grid) .m-kick { color: var(--wheat); }
+html[data-theme="meadow"] main > .section:has(.stats-grid) .section-title::after { filter: brightness(2.2) saturate(.6); }
+html[data-theme="meadow"] .stats-grid { gap: 0; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+html[data-theme="meadow"] .stats-grid .stat-card {
+  position: relative; display: flex; flex-direction: column; justify-content: flex-end; gap: 12px; min-height: 220px; padding: 28px 26px 34px; text-align: left;
+  background: transparent; border: 0; border-left: 1px solid rgba(217, 203, 168, .18); border-radius: 0; box-shadow: none;
+}
+html[data-theme="meadow"] .stats-grid .stat-card:hover { transform: none; box-shadow: none; background: linear-gradient(rgba(226, 184, 90, .06), transparent); }
+html[data-theme="meadow"] .stats-grid .stat-value { font-size: clamp(3.4rem, 6.4vw, 5.6rem); line-height: .9; font-weight: 300; color: var(--wheat); margin: 0; font-variant-numeric: tabular-nums; }
+html[data-theme="meadow"] .stats-grid .stat-label { color: var(--husk); }
+@media (max-width: 640px) { html[data-theme="meadow"] .stats-grid .stat-card { min-height: 0; padding: 26px 0 30px; border-left: 0; border-top: 1px solid rgba(217, 203, 168, .18); } html[data-theme="meadow"] .stats-grid .stat-card::after { left: 0; } }
+/* a stalk grows under each figure once it is revealed */
+html[data-theme="meadow"] .stats-grid .stat-card::after { content: ''; position: absolute; left: 26px; bottom: 0; width: 2px; height: 26px; background: linear-gradient(var(--sprout), transparent); transform-origin: bottom; transform: scaleY(0); transition: transform 1.4s var(--ease-out) .4s; }
+html[data-theme="meadow"] .stats-grid .stat-card.m-done::after, html.m-skip[data-theme="meadow"] .stats-grid .stat-card::after { transform: scaleY(1); }
+html[data-theme="meadow"] main > .section:has(.stats-grid) :is(.card, .stat-card):hover { background-color: transparent; }
+.m-pin .stats-grid .stat-card::after { left: auto; right: 30px; transform: none; transition: none; height: calc(4px + var(--g, 0) * 60px); }
+.m-pin .stats-grid .stat-card::before { content: ''; position: absolute; right: 26px; bottom: calc(var(--g, 0) * 60px); width: 10px; height: 20px; border-radius: 50% 50% 45% 45% / 60% 60% 40% 40%;
+  background: radial-gradient(circle at 50% 30%, #F0CD7A, var(--wheat) 60%); opacity: var(--g, 0); scale: var(--g, 0); transform-origin: 50% 100%; }
+@media (max-width: 640px) { .m-pin .stats-grid .stat-card::after { right: 4px; } .m-pin .stats-grid .stat-card::before { right: 0; } }
+
+/* ===== quote from the Farmstead page ===== */
+.m-quote { max-width: 980px; }
+.m-quote blockquote { margin: 0; font: italic 300 clamp(1.7rem, 3.6vw, 2.9rem)/1.18 var(--font-heading); letter-spacing: -.02em; color: var(--ink); text-wrap: balance; }
+.m-quote blockquote em { font-style: normal; font-weight: 500; color: var(--leaf); background: linear-gradient(transparent 62%, rgba(226, 184, 90, .45) 62%) 0 0 / 0 100% no-repeat; transition: background-size 1.4s var(--ease-out) .5s; }
+.m-quote.m-in blockquote em { background-size: 100% 100%; }
+.m-quote figcaption { margin-top: 22px; font: 500 11px var(--font-mono); letter-spacing: .2em; text-transform: uppercase; color: var(--dim); }
+.m-quote figcaption a { color: var(--leaf-deep); }
+.m-quote .m-w { display: inline-block; opacity: .3; filter: blur(.5px); translate: 0 .15em; transition: opacity .6s ease, filter .6s ease, translate .6s var(--ease-out); }
+.m-quote .m-w.lit { opacity: 1; filter: none; translate: 0 0; }
+
+/* ===== featured work: lots, traced from source to decision ===== */
+html[data-theme="meadow"] .flagship, html[data-theme="meadow"] .work-secondary { padding: clamp(18px, 2.4vw, 28px); }
+html[data-theme="meadow"] .flagship { position: relative; overflow: hidden; }
+html[data-theme="meadow"] .flagship video { border-radius: 12px; background: var(--loam); }
+html[data-theme="meadow"] .project-title { font-size: clamp(1.7rem, 3vw, 2.4rem); line-height: 1.05; }
+html[data-theme="meadow"] .project-title a { color: inherit; text-decoration: none; }
+.lot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 16px; margin: 0 0 14px; padding-bottom: 10px; border-bottom: 1px dashed var(--rule); font: 500 11px var(--font-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--dim); }
+.lot span:first-child { font-weight: 700; color: var(--tomato); }
+.flow { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 6px; margin: 18px 0 6px; max-width: 380px; font: 500 10px var(--font-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink-2); }
+.flow::before { content: ''; position: absolute; left: 6px; right: 6px; top: 50%; height: 1px; background: repeating-linear-gradient(90deg, var(--rule) 0 6px, transparent 6px 10px); z-index: 0; }
+.flow::after { content: ''; position: absolute; top: calc(50% - 4px); left: 0; width: 8px; height: 8px; border-radius: 50%; background: var(--wheat); box-shadow: 0 0 0 4px rgba(226, 184, 90, .25); animation: m-conveyor 3.6s cubic-bezier(.6, 0, .4, 1) infinite; }
+@keyframes m-conveyor { 0% { left: 0; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { left: calc(100% - 8px); opacity: 0; } }
+.flow span, .flow b { position: relative; z-index: 1; padding: 4px 9px; border-radius: 999px; background: var(--paper); border: 1px solid var(--rule); font-weight: 500; }
+.flow b { background: var(--leaf-deep); border-color: var(--leaf-deep); color: var(--paper); }
+.flow i { display: none; }
+/* Farmstead World lot: the poster slowly pans inside its frame */
+.m-farm { display: grid; gap: clamp(18px, 3vw, 36px); margin-bottom: var(--space-5); text-align: left; }
+@media (min-width: 900px) { .m-farm { grid-template-columns: 1fr 1.15fr; align-items: center; } }
+.m-farm-media { position: relative; display: block; overflow: hidden; border-radius: 12px; aspect-ratio: 16 / 9; background: var(--loam); }
+.m-farm-media img { width: 100%; height: 100%; object-fit: cover; scale: 1.08; transform: translateY(calc(var(--fp, 0) * -4%)); transition: scale 1.2s var(--ease-out); }
+.m-farm:hover .m-farm-media img { scale: 1.18; }
+.m-farm-media::after { content: 'Play \2197'; position: absolute; right: 14px; bottom: 14px; padding: 8px 14px; border-radius: 999px; background: var(--wheat); color: var(--loam); font: 600 12px var(--font-body); transform: translateY(8px); opacity: 0; transition: .4s var(--ease-out); }
+.m-farm:hover .m-farm-media::after { transform: none; opacity: 1; }
+.m-farm .badge { background: var(--sprout); }
+
+/* ===== core stack as two counter-running rows of seed tags ===== */
+.m-rows { display: grid; gap: 14px; margin-top: var(--space-6); overflow: hidden; padding-block: 6px;-webkit-mask: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+.m-rows .tech-stack { margin: 0; flex-wrap: nowrap; justify-content: flex-start; width: max-content; gap: 14px; animation: m-marquee 36s linear infinite; }
+.m-rows .tech-stack:nth-child(2) { animation-direction: reverse; animation-duration: 44s; }
+.m-rows:hover .tech-stack { animation-play-state: paused; }
+.m-rows .tech-tag { padding: 14px 22px; font-size: 13px; gap: 10px; }
+.m-rows .tech-tag::before { content: ''; width: 9px; height: 9px; border-radius: 50% 0; background: var(--leaf); rotate: 45deg; transition: background .3s, rotate .5s var(--ease-out); }
+.m-rows .tech-tag:hover::before { background: var(--wheat); rotate: 225deg; }
+.m-rows .tech-stack:nth-child(2) .tech-tag { background: transparent; }
+@keyframes m-marquee { to { transform: translateX(-50%); } }
+
+/* ===== wheat line along the top of the footer ===== */
+.m-wheat { position: absolute; left: 0; right: 0; bottom: calc(100% - 2px); height: 190px; width: 100%; pointer-events: none; }
+.m-wheat .sway > g, .m-wheat .sway > g > g { transform-box: fill-box; transform-origin: 50% 100%; }
+.m-wheat .sway > g { animation: m-sway var(--s, 4s) ease-in-out var(--d, 0s) infinite alternate; }
+.m-wheat .sway > g > g { transition: rotate 1.2s var(--ease-out); }
+/* closing line at the top of the footer */
+.site-footer .m-close { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 24px 40px; padding-bottom: var(--space-7); margin-bottom: var(--space-7); border-bottom: 1px solid rgba(217, 203, 168, .18); }
+.m-close p { margin: 0; max-width: 15ch; font: 300 clamp(2.4rem, 6vw, 4.8rem)/1 var(--font-heading); letter-spacing: -.03em; color: var(--linen); text-wrap: balance; }
+.m-close em { color: var(--wheat); }
+html[data-theme="meadow"] .m-close .btn--primary { background: linear-gradient(var(--linen), var(--linen)) left / 0 100% no-repeat, var(--wheat); border-color: var(--wheat); color: var(--loam); }
+html[data-theme="meadow"] .m-close .btn--primary:hover { background-size: 100% 100%; border-color: var(--linen); }
+@keyframes m-sway { from { transform: rotate(-3.5deg); } to { transform: rotate(3deg); } }
+
+/* ===== scroll vine (wide screens): grows down the left margin as you read ===== */
+.m-vine { position: fixed; z-index: 1; left: max(16px, calc((100vw - 1200px) / 2 - 64px)); top: 0; width: 60px; height: 100vh; pointer-events: none; }
+.m-vine path.stem { fill: none; stroke: var(--leaf); stroke-width: 1.6; stroke-linecap: round; transition: stroke .5s; }
+.m-vine.dark path.stem { stroke: var(--sprout); }
+.m-vine .leaf { transform-box: fill-box; transform-origin: var(--o, 0 50%); scale: 0; transition: scale .7s cubic-bezier(.3, 1.6, .5, 1); }
+.m-vine .leaf.on { scale: 1; }
+@media (max-width: 1279px) { .m-vine { display: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .m-ticker > div, .m-rows .tech-stack, .m-wheat .sway > g, .flow::after, main > .section:has(.stats-grid)::before, .m-probe::before, .m-scroll::after, .hero-status::before { animation: none !important; }
+  .m-rows { -webkit-mask: none; mask: none; }
+  .m-rows .tech-stack { flex-wrap: wrap; width: auto; }
+  .m-rows .tech-stack[aria-hidden] { display: none; }
+  .m-field { transform: none; }
+}

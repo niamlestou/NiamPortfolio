@@ -1,3 +1,43 @@
+// Compute structure (not motion, so it also runs with reduced motion): mono section indices, an "on this page" index in the
+// inner-page heroes, and a reading-progress bar. Meadow builds its own kickers in themes/meadow.js.
+(function () {
+    var main = document.querySelector('main');
+    if (!main || document.documentElement.dataset.theme === 'meadow') return;
+    var slug = function (s) { return s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); };
+    var found = [];
+    [].forEach.call(main.querySelectorAll(':scope > section'), function (sec) {
+        var head = sec.querySelector('.section-header'), title = head && head.querySelector('.section-title');
+        if (!title) return;
+        var n = String(found.length + 1).padStart(2, '0'), name = title.textContent.trim(), idx = document.createElement('p'), b = document.createElement('b');
+        idx.className = 'sec-idx'; idx.setAttribute('aria-hidden', 'true');
+        b.textContent = n; idx.append(b, ' / ' + name);
+        head.prepend(idx);
+        if (!sec.id) sec.id = 's' + n + '-' + slug(name);
+        found.push({ n: n, name: name, id: sec.id });
+    });
+
+    var hero = main.querySelector('.hero:not(.hero--split)'), inner = hero && hero.querySelector('.hero-inner');
+    if (inner && found.length > 1) {
+        var toc = document.createElement('nav'), ol = document.createElement('ol'), k = document.createElement('p');
+        toc.className = 'hero-toc card'; toc.setAttribute('aria-label', 'On this page');
+        k.className = 'toc-k'; k.textContent = 'On this page';
+        found.forEach(function (f) {
+            var li = document.createElement('li'), a = document.createElement('a'), b = document.createElement('b');
+            a.href = '#' + f.id; b.textContent = f.n; a.append(b, f.name); li.append(a); ol.append(li);
+        });
+        toc.append(k, ol); inner.append(toc); hero.classList.add('has-toc');
+    }
+
+    var bar = document.createElement('div'), pending = false;
+    bar.className = 'read-bar'; bar.setAttribute('aria-hidden', 'true'); document.body.append(bar);
+    var update = function () {
+        var max = document.documentElement.scrollHeight - innerHeight;
+        bar.style.setProperty('--read', max > 0 ? Math.min(1, scrollY / max).toFixed(4) : 0);
+    };
+    addEventListener('scroll', function () { if (!pending) { pending = true; requestAnimationFrame(function () { pending = false; update(); }); } }, { passive: true });
+    addEventListener('resize', update); update();
+})();
+
 (function () {
     var base = document.currentScript && document.currentScript.src;
     var root = document.documentElement;
@@ -41,6 +81,22 @@
             [].forEach.call(split_hero.querySelectorAll('.pipe li b'), function (b, i) {
                 animate(b, { color: ['#F5F5F0', '#E8D4A8', '#F5F5F0'], duration: 1400, delay: 2200 + i * 1700, loop: true, loopDelay: 5600, ease: 'inOutSine' });
             });
+
+            // readout: each step's payload is typed out as the pulse reaches it (same 7s cycle); the page labels them illustrative
+            var rd = split_hero.querySelector('.rd-code'), cap = split_hero.querySelector('.rd-cap');
+            if (rd) {
+                var PAY = ['{"src":"market-feed","bars":25,"headlines":312,"asof":"09:30:00"}',
+                    '{"ridge_p_up":0.81,"laya":"unsure","route":"logistic","tiebreak":false}',
+                    '{"size_usd":1840,"cap_usd":5000,"day_pnl":-62,"loss_limit":250,"approved":true}',
+                    '{"venue":"alpaca-paper","side":"buy","qty":12,"grade_at":"t+1d"}'];
+                var type = function (i) {
+                    var s = PAY[i], o = { c: 0 };
+                    if (cap) cap.textContent = 'payload · step ' + (i + 1) + ' · illustrative';
+                    animate(o, { c: s.length, duration: Math.min(1100, s.length * 16), ease: 'linear', onUpdate: function () { rd.textContent = s.slice(0, Math.round(o.c)); } });
+                };
+                var cycle = function () { PAY.forEach(function (_, i) { setTimeout(function () { type(i); }, 2200 + i * 1700); }); setTimeout(cycle, 7000); };
+                cycle();
+            }
         } else {
             var inner = document.querySelector('.hero:not(.hero--split) .hero-inner');
             if (inner) {
@@ -57,7 +113,7 @@
         }
 
         // ---- scroll reveals + count-ups ----
-        var SEL = 'main > section:not(.hero) :is(.section-title,.card,.timeline-item,.tech-stack,.stat-card,.highlight-item)';
+        var SEL = 'main > section:not(.hero) :is(.sec-idx,.section-title,.card,.timeline-item,.tech-stack,.stat-card,.highlight-item,.code-fig)';
         var items = [].slice.call(document.querySelectorAll(SEL)).filter(function (el) {
             if (el.parentElement.closest(SEL)) { el.classList.add('m-done'); return false; } // nested: parent carries it
             return true;
@@ -72,12 +128,21 @@
             animate(o, { v: parseFloat(el.dataset.count), duration: 1600, ease: 'outExpo', onUpdate: function () { fmt(el, o.v); } });
         };
         [].forEach.call(document.querySelectorAll('[data-count]'), function (el) { fmt(el, 0); });
+        // sparklines in a revealed card draw in with it (SVG paths start hidden only once the reveal runs, so a skipped reveal leaves them visible)
+        var spark = function (el) {
+            var paths = el.querySelectorAll('.spark path'), dots = el.querySelectorAll('.spark circle');
+            if (!paths.length) return;
+            var d = A.svg.createDrawable(paths);
+            A.utils.set(d, { draw: '0 0' }); A.utils.set(dots, { opacity: 0 });
+            animate(d, { draw: ['0 0', '0 1'], duration: 1300, delay: stagger(140, { start: 250 }), ease: 'inOutQuad' });
+            animate(dots, { opacity: [0, 1], duration: 400, delay: 1500 });
+        };
         var io = new IntersectionObserver(function (entries) {
             var seen = entries.filter(function (e) { return e.isIntersecting; }).map(function (e) { io.unobserve(e.target); return e.target; });
             if (!seen.length) return;
             rise(seen, { delay: stagger(90), duration: 800 });
-            seen.forEach(function (el) { [].forEach.call(el.querySelectorAll('[data-count]'), count); });
-        }, { threshold: 0.05, rootMargin: '0px 0px -8% 0px' });
+            seen.forEach(function (el) { [].forEach.call(el.querySelectorAll('[data-count]'), count); spark(el); });
+        }, { threshold: 0, rootMargin: '0px 0px -8% 0px' });
         items.forEach(function (el) { io.observe(el); });
 
         // a jump past an element (anchor, reload mid-page) never intersects it: show it without animating
@@ -98,7 +163,7 @@
         }, { passive: true });
 
         // ---- circuit traces: inline the margin SVGs, draw them in per 1000px tile as they scroll into view ----
-        if (base && window.matchMedia('(min-width: 640px)').matches) {
+        if (base && root.dataset.theme !== 'meadow' && window.matchMedia('(min-width: 640px)').matches) { // meadow grows vines instead (themes/meadow.js)
             var tiles = Math.ceil(document.body.scrollHeight / 1000) + 1, layer = document.createElement('div'), lit = [], u = 0;
             layer.className = 'circuit'; layer.setAttribute('aria-hidden', 'true');
             Promise.all(['left', 'right'].map(function (side) {
@@ -160,10 +225,38 @@
             }, { passive: true });
         }
 
+        // ---- data-flow diagram: nodes fade up, edges draw with the same stroke as the circuit traces, end dots pop ----
+        var dg = document.querySelector('.dg');
+        if (dg && dg.getBoundingClientRect().top > innerHeight * 0.9) { // already on screen (reload mid-page): leave it drawn
+            var nodes = dg.querySelectorAll('.dg-node'), dots = dg.querySelectorAll('.dg-dot'), edges = A.svg.createDrawable(dg.querySelectorAll('.dg-edge'));
+            A.utils.set(edges, { draw: '0 0' }); A.utils.set(nodes, { opacity: 0 }); A.utils.set(dots, { opacity: 0 });
+            dots.forEach(function (d) { d.style.transformBox = 'fill-box'; d.style.transformOrigin = 'center'; });
+            var dio = new IntersectionObserver(function (es) {
+                if (!es[0].isIntersecting) return;
+                dio.disconnect();
+                animate(nodes, { opacity: [0, 1], y: [10, 0], duration: 700, delay: stagger(110), ease: 'outExpo' });
+                animate(edges, { draw: ['0 0', '0 1'], duration: 1100, delay: stagger(130, { start: 350 }), ease: 'inOutQuad' });
+                animate(dots, { opacity: [0, 1], scale: [0, 1], duration: 450, delay: stagger(110, { start: 900 }), ease: 'outBack' });
+            }, { threshold: 0.2 });
+            dio.observe(dg);
+        }
+
+        // ---- Compute: the featured recording plays muted while in view (not on data saver); a manual pause is respected ----
+        var fv = document.querySelector('.flagship video');
+        if (fv && root.dataset.theme !== 'meadow' && !(navigator.connection && navigator.connection.saveData)) {
+            var ours = false, off = false;
+            fv.loop = true;
+            fv.addEventListener('pause', function () { if (!ours) off = true; ours = false; });
+            new IntersectionObserver(function (es) {
+                if (es[0].isIntersecting) { if (!off) fv.play().catch(function () {}); }
+                else if (!fv.paused) { ours = true; fv.pause(); }
+            }, { threshold: 0.6 }).observe(fv);
+        }
+
         // ---- pointer effects (CSS reads the variables) ----
         if (hover) {
             document.addEventListener('pointermove', function (e) {
-                var card = e.target.closest && e.target.closest('.card');
+                var card = e.target.closest && e.target.closest('.card, .kpi');
                 if (card) {
                     var r = card.getBoundingClientRect();
                     card.style.setProperty('--mx', (e.clientX - r.left) + 'px');

@@ -14,7 +14,7 @@
   };
   const vid = store('localStorage', 'fp_vid'), sid = store('sessionStorage', 'fp_sid');
   const send = (body) => {
-    const data = JSON.stringify({ vid, sid, ...body });
+    const data = JSON.stringify({ vid, sid, theme: document.documentElement.dataset.theme || 'control', ...body }); // theme = visual style under A/B test
     if (!(navigator.sendBeacon && navigator.sendBeacon(ENDPOINT, new Blob([data], { type: 'text/plain' })))) fetch(ENDPOINT, { method: 'POST', body: data, keepalive: true }).catch(() => {});
   };
   const clean = (s) => String(s ?? '').replace(/[^\w .:/#-]/g, '').slice(0, 60);

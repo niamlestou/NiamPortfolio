@@ -9,7 +9,7 @@ import { events, funnel } from './config.mjs';
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const analytics = createAnalytics({
-  file: join(root, 'data/analytics.jsonl'),
+  file: process.env.ANALYTICS_FILE || join(root, 'data/analytics.jsonl'),
   events,
   funnel,
 });

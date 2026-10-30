@@ -9,7 +9,7 @@
     <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
     <meta name="description" content="Fantasy Football Agent by Niam LeStourgeon: AI that researches with your brain using Jev, Claude, AWS Lambda, FastAPI, and PostgreSQL for automated fantasy football research and recommendations.">
     <link rel="canonical" href="https://niam.pro/fantasy-football-agent.html">
-    <script>document.documentElement.classList.add("js")</script>
+    <script>document.documentElement.classList.add("js")</script><script src="/themes/theme.js"></script>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-qOhFsq0QMV2REqNwk5hGH5bZE9SkX6gt6yeyKdYPv+U='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; media-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <link rel="preload" href="assets/fonts/bricolage-grotesque.woff2" as="font" type="font/woff2" crossorigin>
@@ -112,7 +112,7 @@
                 <div class="section-header">
                     <h2 class="section-title">The Problem</h2>
                 </div>
-                <p class="text-center" style="max-width: 60ch; margin-inline: auto; text-wrap: pretty; line-height: 1.7;">I love football, but to be good at fantasy football, you need to spend hours
+                <p style="text-wrap: pretty; line-height: 1.7;">I love football, but to be good at fantasy football, you need to spend hours
                     watching the games, doing research, really stay on top of the news if you want
                     to be competitive. Being a student, working a job, spending time with family makes
                     this intense research difficult and in turn takes away your chances to win your
@@ -210,6 +210,32 @@
                         </div>
                     </article>
                 </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">In Code</h2>
+                </div>
+                <p>The shape of the weekly run: a decision model filters the news first, and Claude only sees what is left.</p>
+                <figure class="code-fig">
+                    <figcaption class="code-cap"><span>handler.py</span><em>illustrative sketch of the approach, not the production source</em></figcaption>
+<pre class="code" tabindex="0"><code><span class="c"># Lambda handler: Jev filters the news before Claude ever sees it</span>
+<span class="k">def</span> <span class="f">handler</span>(event, context):
+    user = load_user(event[<span class="s">"user_id"</span>])              <span class="c"># includes their written philosophy</span>
+    articles = fetch_news() + fetch_sports() + fetch_weather()
+
+    relevant = [a <span class="k">for</span> a <span class="k">in</span> articles
+                <span class="k">if</span> jev.is_relevant(a.text)]         <span class="c"># a fraction of Claude's input cost</span>
+
+    brief = claude.messages.create(
+        model=MODEL,
+        system=user.philosophy,                     <span class="c"># every call is bound to it</span>
+        messages=[{<span class="s">"role"</span>: <span class="s">"user"</span>, <span class="s">"content"</span>: render(relevant)}],
+    )
+    send_email(user.email, brief.content[<span class="n">0</span>].text)   <span class="c"># graded against results later</span></code></pre>
+                </figure>
             </div>
         </section>
 

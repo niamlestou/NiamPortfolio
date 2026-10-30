@@ -7,15 +7,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Niam LeStourgeon | Portfolio</title>
     <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
-    <meta name="description" content="Niam LeStourgeon's portfolio: AWS, backend, and AI projects built with Claude's API.">
+    <meta name="description" content="Niam LeStourgeon's portfolio: data pipelines, analytics, and applied AI, from local models to production agents.">
     <link rel="canonical" href="https://niam.pro/">
-    <script>document.documentElement.classList.add("js")</script>
+    <script>document.documentElement.classList.add("js")</script><script src="/themes/theme.js"></script>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-qOhFsq0QMV2REqNwk5hGH5bZE9SkX6gt6yeyKdYPv+U='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; media-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <link rel="preload" href="assets/fonts/bricolage-grotesque.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="assets/fonts/dm-sans.woff2" as="font" type="font/woff2" crossorigin>
     <script defer src="intro.js"></script>
     <script defer src="nav.js"></script>
+    <script defer src="themes/switch.js"></script>
     <script defer src="/analytics.js"></script>
     <script defer src="assets/anime.umd.min.js"></script>
     <script defer src="motion.js"></script>
@@ -24,13 +25,13 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://niam.pro/">
     <meta property="og:title" content="Niam LeStourgeon | Portfolio">
-    <meta property="og:description" content="Niam LeStourgeon's portfolio: AWS, backend, and AI projects built with Claude's API.">
+    <meta property="og:description" content="Niam LeStourgeon's portfolio: data pipelines, analytics, and applied AI, from local models to production agents.">
     <meta property="og:image" content="https://niam.pro/og-image.jpg">
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://niam.pro/">
     <meta property="twitter:title" content="Niam LeStourgeon | Portfolio">
-    <meta property="twitter:description" content="Niam LeStourgeon's portfolio: AWS, backend, and AI projects built with Claude's API.">
+    <meta property="twitter:description" content="Niam LeStourgeon's portfolio: data pipelines, analytics, and applied AI, from local models to production agents.">
     <meta property="twitter:image" content="https://niam.pro/og-image.jpg">
     <!-- Person Structured Data -->
     <script type="application/ld+json">
@@ -101,6 +102,10 @@
                         <li><b>Guardrails decide</b><span>$5,000 position cap, $250 daily loss limit</span></li>
                         <li><b>Paper trade, then grade</b><span>Alpaca paper account, time-split evaluation</span></li>
                     </ol>
+                    <div class="rd-pay c-only" aria-hidden="true">
+                        <p class="rd-cap">payload &middot; step 3 &middot; illustrative</p>
+                        <code class="rd-code">{"size_usd":1840,"cap_usd":5000,"day_pnl":-62,"loss_limit":250,"approved":true}</code>
+                    </div>
                 </a>
             </div>
         </section>
@@ -109,22 +114,48 @@
                 <div class="section-header">
                     <h2 class="section-title">Impact at a Glance</h2>
                 </div>
-                <div class="stats-grid">
-                    <div class="card stat-card">
-                        <div class="stat-value stat-value--text" data-count="1">1</div>
-                        <div class="stat-label">Year Building</div>
+                <div class="spec-grid c-only">
+                    <div class="card spec-card">
+                        <p class="spec-k">Regime AUC</p>
+                        <p class="spec-v"><span data-count="0.925" data-decimals="3">0.925</span><small>vs 0.631</small></p>
+                        <p class="spec-l">Ridge logistic against Laya on market-snapshot numbers</p>
+                        <svg class="spark" viewBox="0 0 200 40" aria-hidden="true"><path class="a" d="M3 11H188"/><path class="b" d="M3 29H129"/></svg>
                     </div>
+                    <div class="card spec-card">
+                        <p class="spec-k">Sentiment accuracy</p>
+                        <p class="spec-v"><span data-count="71" data-suffix="%">71%</span> &rarr; <span data-count="88" data-suffix="%">88%</span></p>
+                        <p class="spec-l">Qwen3-4B before and after QLoRA fine-tuning, on public sentiment data</p>
+                        <svg class="spark" viewBox="0 0 200 40" aria-hidden="true"><path class="b" d="M3 36H197"/><path class="a" d="M3 30L197 8"/><circle cx="3" cy="30" r="3.5"/><circle cx="197" cy="8" r="3.5"/></svg>
+                    </div>
+                    <div class="card spec-card">
+                        <p class="spec-k">Fine-tune</p>
+                        <p class="spec-v">4-bit QLoRA</p>
+                        <p class="spec-l">Qwen3-4B-Instruct in PyTorch (peft, bitsandbytes): a quarter of the weight memory of 16-bit</p>
+                        <svg class="spark" viewBox="0 0 200 40" aria-hidden="true"><path class="b" d="M3 11H197"/><path class="a" d="M3 29H51"/></svg>
+                    </div>
+                    <div class="card spec-card">
+                        <p class="spec-k">Building</p>
+                        <p class="spec-v"><span data-count="1">1</span> year</p>
+                        <p class="spec-l">Four projects built, two of them live products</p>
+                        <svg class="spark" viewBox="0 0 200 40" aria-hidden="true"><path class="a" d="M10.0 14V32M26.3 14V32M42.6 14V32M58.9 14V32M75.2 14V32M91.5 14V32M107.8 14V32M124.1 14V32M140.4 14V32M156.7 14V32M173.0 14V32M189.3 14V32"/></svg>
+                    </div>
+                </div>
+                <div class="stats-grid m-only">
                     <div class="card stat-card">
                         <div class="stat-value stat-value--text" data-count="0.925" data-decimals="3">0.925</div>
-                        <div class="stat-label">Regime AUC, Tick Forward Model</div>
+                        <div class="stat-label">Regime AUC, ridge logistic vs 0.631 for Laya</div>
                     </div>
                     <div class="card stat-card">
-                        <div class="stat-value stat-value--text" data-count="4">4</div>
-                        <div class="stat-label">Projects Built</div>
+                        <div class="stat-value stat-value--text" data-count="88" data-suffix="%">88%</div>
+                        <div class="stat-label">Sentiment accuracy, up from 71% after QLoRA fine-tuning</div>
                     </div>
                     <div class="card stat-card">
-                        <div class="stat-value stat-value--text" data-count="15">15</div>
-                        <div class="stat-label">Users Across Projects</div>
+                        <div class="stat-value stat-value--text">4-bit</div>
+                        <div class="stat-label">QLoRA fine-tune of Qwen3-4B-Instruct</div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-value stat-value--text" data-count="1">1</div>
+                        <div class="stat-label">Year building: four projects, two live</div>
                     </div>
                 </div>
             </div>
@@ -154,6 +185,24 @@
                     <div class="tech-stack"><span class="tech-tag">PyTorch</span><span class="tech-tag">QLoRA</span><span class="tech-tag">Paper trading</span></div>
                     <a class="case-link" href="tick-forward.html">Read case study &nearr;</a>
                 </article>
+                <div class="work-pair c-only">
+                    <article class="card work-spec">
+                        <p class="project-meta">Game &middot; Web app &middot; Supply chain</p>
+                        <h3 class="project-title"><a href="farmstead-world.html">Farmstead World</a></h3>
+                        <p class="project-description">A free-to-play farming game where you plant, harvest and discover your way through the real food supply chain.</p>
+                        <dl class="spec-row"><div><dt>Farms</dt><dd>13 active</dd></div><div><dt>Eggs</dt><dd>10,355 doz</dd></div><div><dt>Corn</dt><dd>148 bu</dd></div></dl>
+                        <div class="tech-stack"><span class="tech-tag">Web app</span><span class="tech-tag">Free to play</span><span class="tech-tag">Supply chain</span></div>
+                        <a class="case-link" href="farmstead-world.html">Read case study &nearr;</a>
+                    </article>
+                    <article class="card work-spec">
+                        <p class="project-meta">Reader &middot; Audio &middot; Signing</p>
+                        <h3 class="project-title"><a href="lamp-light.html">Lamp Light</a></h3>
+                        <p class="project-description">A personal document reader that reads aloud and signs without leaving the page, usable on the web or as its own app.</p>
+                        <dl class="spec-row"><div><dt>Audio</dt><dd>playback</dd></div><div><dt>Signing</dt><dd>in-page</dd></div><div><dt>Price</dt><dd>free</dd></div></dl>
+                        <div class="tech-stack"><span class="tech-tag">Document reader</span><span class="tech-tag">Audio</span><span class="tech-tag">Signing</span></div>
+                        <a class="case-link" href="lamp-light.html">Read case study &nearr;</a>
+                    </article>
+                </div>
             </div>
         </section>
         <section class="section">
@@ -176,6 +225,12 @@
 
     <footer class="site-footer">
         <div class="container">
+            <div class="style-switch" role="group" aria-label="Site style">
+                <span class="style-switch-label">Style</span>
+                <button type="button" data-style="control">Compute</button>
+                <button type="button" data-style="meadow">Meadow</button>
+                <p class="style-note">Add your note about these two styles here.</p>
+            </div>
             <div class="footer-inner">
                 <p class="footer-copyright">Copyright &copy; 2026 <span class="gold">Niam LeStourgeon.</span> All Rights Reserved</p>
                 <a class="footer-link" href="https://github.com/niamlestou" rel="noopener" target="_blank">GitHub</a>

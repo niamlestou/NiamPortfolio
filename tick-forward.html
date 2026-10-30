@@ -9,7 +9,7 @@
     <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
     <meta name="description" content="Tick Forward by Niam LeStourgeon: AI-powered stock trading bot with trained models, AWS Lambda, and automated decision-making for trading strategies.">
     <link rel="canonical" href="https://niam.pro/tick-forward.html">
-    <script>document.documentElement.classList.add("js")</script>
+    <script>document.documentElement.classList.add("js")</script><script src="/themes/theme.js"></script>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-qOhFsq0QMV2REqNwk5hGH5bZE9SkX6gt6yeyKdYPv+U='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; media-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <link rel="preload" href="assets/fonts/bricolage-grotesque.woff2" as="font" type="font/woff2" crossorigin>
@@ -99,6 +99,18 @@
                 <p class="text-center text-muted">Paper-trading results will be posted once the bot has a full track record.</p>
             </div>
         </section>
+        <section class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">System Map</h2>
+                </div>
+                <div class="dg-wrap" role="region" aria-label="Tick Forward data flow diagram" tabindex="0">
+                    <svg class="dg" viewBox="0 0 960 350" role="img" aria-labelledby="dg-title dg-desc"><title id="dg-title">Tick Forward data flow</title><desc id="dg-desc">Price snapshots go to a ridge logistic model and headlines go to Laya and Qwen3-4B. A router weighs both, guardrails cap the position at $5,000 and the daily loss at $250, then orders go to an Alpaca paper account. Results are graded on time-split data and fed back to the models.</desc><path class="dg-edge" d="M152 61H202"/><path class="dg-edge" d="M152 227H202"/><path class="dg-edge" d="M354 61C382 61 376 144 404 144"/><path class="dg-edge" d="M354 227C382 227 376 144 404 144"/><path class="dg-edge" d="M556 144H606"/><path class="dg-edge" d="M758 144C786 144 780 61 808 61"/><path class="dg-edge" d="M884 98V190"/><path class="dg-edge back" d="M884 264V316H278V264"/><g class="dg-node"><rect x="0" y="24" width="152" height="74" rx="8"/><text class="dg-t" x="14" y="52">Market data</text><text class="dg-s" x="14" y="72">price snapshots</text><text class="dg-s" x="14" y="86">on a schedule</text></g><g class="dg-node"><rect x="0" y="190" width="152" height="74" rx="8"/><text class="dg-t" x="14" y="218">Headlines</text><text class="dg-s" x="14" y="238">text, timestamped</text><text class="dg-s" x="14" y="252">before the open</text></g><g class="dg-node"><rect x="202" y="24" width="152" height="74" rx="8"/><text class="dg-t" x="216" y="52">Ridge logistic</text><text class="dg-s" x="216" y="72">reads numbers</text><text class="dg-s" x="216" y="86">AUC 0.925</text></g><g class="dg-node"><rect x="202" y="190" width="152" height="74" rx="8"/><text class="dg-t" x="216" y="218">Laya / Qwen3-4B</text><text class="dg-s" x="216" y="238">reads text</text><text class="dg-s" x="216" y="252">breaks ties</text></g><g class="dg-node"><rect x="404" y="107" width="152" height="74" rx="8"/><text class="dg-t" x="418" y="135">Route + score</text><text class="dg-s" x="418" y="155">logistic first</text><text class="dg-s" x="418" y="169">text breaks ties</text></g><g class="dg-node key"><rect x="606" y="107" width="152" height="74" rx="8"/><text class="dg-t" x="620" y="135">Guardrails</text><text class="dg-s" x="620" y="155">$5,000 cap</text><text class="dg-s" x="620" y="169">$250 daily loss</text></g><g class="dg-node"><rect x="808" y="24" width="152" height="74" rx="8"/><text class="dg-t" x="822" y="52">Paper trade</text><text class="dg-s" x="822" y="72">Alpaca account</text><text class="dg-s" x="822" y="86">no real money</text></g><g class="dg-node"><rect x="808" y="190" width="152" height="74" rx="8"/><text class="dg-t" x="822" y="218">Grade</text><text class="dg-s" x="822" y="238">time-split eval</text><text class="dg-s" x="822" y="252">vs. the base model</text></g><circle class="dg-dot" cx="202" cy="61" r="3.5"/><circle class="dg-dot" cx="202" cy="227" r="3.5"/><circle class="dg-dot" cx="404" cy="144" r="3.5"/><circle class="dg-dot" cx="404" cy="144" r="3.5"/><circle class="dg-dot" cx="606" cy="144" r="3.5"/><circle class="dg-dot" cx="808" cy="61" r="3.5"/><circle class="dg-dot" cx="884" cy="190" r="3.5"/><circle class="dg-dot" cx="278" cy="264" r="3.5"/><text class="dg-s" x="581" y="306" text-anchor="middle">graded, then retrained</text></svg>
+                </div>
+                <p class="dg-cap">Numbers go to the ridge logistic model, text goes to Laya, and nothing reaches the paper account without passing the guardrails. Every call is graded afterwards.</p>
+            </div>
+        </section>
+
 <!--
         <section class="section">
             <div class="container">
@@ -240,6 +252,30 @@
                         <p class="decision-description">Headlines must be created before the entry open, and the tuned model is only tested after its last training day. A fitted Laya on 25 large caps reached ECE 0.02 to 0.06 but no measured edge. Hard limits cap each position at $5,000 and daily loss at $250, on a paper account until the evidence is there.</p>
                     </article>
                 </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">In Code</h2>
+                </div>
+                <p>The core of the headline model: ask for one word, read the probabilities of the two answers, and compare models on identical data.</p>
+                <figure class="code-fig">
+                    <figcaption class="code-cap"><span>score_headline.py</span><em>illustrative sketch of the approach, not the production source</em></figcaption>
+<pre class="code" tabindex="0"><code><span class="c"># Score a headline from the first-token probabilities: no sampling, so no noise</span>
+UP, DOWN = tok.encode(<span class="s">" up"</span>)[<span class="n">0</span>], tok.encode(<span class="s">" down"</span>)[<span class="n">0</span>]
+
+<span class="k">def</span> <span class="f">p_up</span>(model, headline: str) -&gt; float:
+    prompt = <span class="s">f"Headline: {headline}\nWill the stock go up or down? Answer:"</span>
+    ids = tok(prompt, return_tensors=<span class="s">"pt"</span>).to(model.device)
+    <span class="k">with</span> torch.no_grad():
+        logits = model(**ids).logits[<span class="n">0</span>, -<span class="n">1</span>]       <span class="c"># next-token logits</span>
+    pair = logits[[UP, DOWN]].softmax(dim=-<span class="n">1</span>)     <span class="c"># renormalise over the two answers</span>
+    <span class="k">return</span> pair[<span class="n">0</span>].item()                         <span class="c"># P(up)</span>
+
+<span class="c"># base and tuned models are scored on the same time-split headlines</span></code></pre>
+                </figure>
             </div>
         </section>
 

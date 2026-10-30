@@ -9,7 +9,7 @@
     <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
     <meta name="description" content="Farmstead World by Niam LeStourgeon: A perpetual browser game walking through the real food supply chain with 13 active farms, egg production, and corn harvests.">
     <link rel="canonical" href="https://niam.pro/farmstead-world.html">
-    <script>document.documentElement.classList.add("js")</script>
+    <script>document.documentElement.classList.add("js")</script><script src="/themes/theme.js"></script>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-qOhFsq0QMV2REqNwk5hGH5bZE9SkX6gt6yeyKdYPv+U='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; media-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <link rel="preload" href="assets/fonts/bricolage-grotesque.woff2" as="font" type="font/woff2" crossorigin>
@@ -134,9 +134,10 @@
                 <div class="section-header">
                     <h2 class="section-title">Gameplay</h2>
                 </div>
+                <p>Every session starts on your own homestead. You plant and harvest crops, care for your animals, and decide what to do with what you produce: sell it on the player-run exchange or hold it until prices improve. Each choice moves you along the real food supply chain, from raw goods toward finished products. The built-in guide explains each step as you reach it.</p>
                 <div class="gp" role="region" aria-roledescription="carousel" aria-label="Farmstead World gameplay screenshots">
                     <div class="gp-stage">
-                        <figure class="gp-slide on" data-title="Your farm" data-desc="Plant crops, raise animals and expand your homestead. Barns, silos and coops each unlock new ways to produce.">
+                        <figure class="gp-slide on" data-title="Your farm" data-desc="Your homestead is the home base. Plant crops, raise animals and expand as you earn. Barns, silos and coops each unlock new ways to produce, so every upgrade changes what you can sell and where you fit in the supply chain.">
                             <img src="assets/farmstead-farm.webp" width="777" height="518" alt="Farmstead World screenshot: Your farm" decoding="async">
                         </figure>
                         <button class="gp-btn gp-prev" type="button" aria-label="Previous screenshot">&lsaquo;</button>
@@ -175,6 +176,30 @@
                 </p>
             </div>
         </section>
+        <section class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">In Code</h2>
+                </div>
+                <p>The player-run exchange prices each item from the orders sitting on it, nudged a little each tick.</p>
+                <figure class="code-fig">
+                    <figcaption class="code-cap"><span>exchange.js</span><em>illustrative sketch of the approach, not the production source</em></figcaption>
+<pre class="code" tabindex="0"><code><span class="c">// Exchange price: moves with supply and demand, capped so one trade can't break the market</span>
+<span class="k">function</span> <span class="f">nextPrice</span>(item, orders) {
+  <span class="k">const</span> total = side =&gt; orders
+    .filter(o =&gt; o.item === item.id &amp;&amp; o.side === side)
+    .reduce((sum, o) =&gt; sum + o.qty, <span class="n">0</span>);
+
+  <span class="k">const</span> supply = total(<span class="s">"sell"</span>), demand = total(<span class="s">"buy"</span>);
+  <span class="k">const</span> pressure = (demand - supply) / Math.max(demand + supply, <span class="n">1</span>);   <span class="c">// -1 to 1</span>
+  <span class="k">const</span> move = Math.max(-<span class="n">0.05</span>, Math.min(<span class="n">0.05</span>, pressure * <span class="n">0.05</span>));       <span class="c">// at most 5% per tick</span>
+
+  <span class="k">return</span> Math.max(item.floor, item.price * (<span class="n">1</span> + move));
+}</code></pre>
+                </figure>
+            </div>
+        </section>
+
         <section class="section">
             <div class="container">
                 <div class="section-header">
